@@ -101,6 +101,9 @@ class aladin:
   
   def interactive(self):         
     def read():
+      def man():
+	fun = E1.get()
+	return fun
       def extract():
 	doc = ODSReader(aladin.choose())
 	tipe = doc.getSheet(sheet)
@@ -127,13 +130,15 @@ class aladin:
       L1 = Label(reet, text="I got the data...")
       L2 = Label(reet, text="As you might know, there are %i categories of the data that you have"%len(tipe[0]))
       L3 = Label(reet, text ="And they are: \n")
-      v = StringVar()
-      v.set("Insert me as an integer or a float")
-      E1 = Entry(reet, textvariable=v)
+      E1 = Entry(reet)
+      E1.delete(0, END)
+      E1.insert(0, "Distance (Parsecs)")
+      B1= Button(reet, text="Entry", command=man)
       L1.grid()
       L2.grid()
       L3.grid()
-      E1.grid(columnspan = 2)
+      E1.grid(columnspan = 2, sticky=W)
+      B1.grid(row=3, sticky=E)
       for x in tipe[0]:
 	Label(reet, text = "- "+x).grid()
       reet.mainloop()
