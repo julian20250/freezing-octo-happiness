@@ -119,42 +119,6 @@ for x in xrange(2, 4):
       readable[head[x]].remove(y)
       readable[head[x]].insert(ind, cross)
 plt.rc("text", usetex=True)
-# Experiments With Polar Coordinates
-# Test Side
-#fig = plt.figure()
-#ax = plt.axes(projection="3d")
-#x = np.linspace(-1, 1, 100)
-#y = (1-x**2)**.5
-#z = np.zeros(100)
-
-##Axis
-#ax.plot(np.linspace(0, 1, 100), z, z, "-g")
-#ax.plot(z, np.linspace(0, 1, 100), z, "-g")
-#ax.plot(z, z, np.linspace(0, 1, 100), "-g", label = "Axis")
-
-##Text of Axis
-#ax.text(1, 0, 0, "x")
-#ax.text(0, 1, 0, "y")
-#ax.text(0, 0, 1, "z")
-
-
-#ax.plot(x, y, z, "-r")
-#ax.plot(x, -y, z, "-r", label = "Ecliptic")
-#theta = np.linspace(0, np.pi, 100)
-#inclination = 23+5/60. #= 23 grades, 5 minutes = Earth's inclination 
-#s = inclination * np.pi / 180 # Maximun Amplitude between the mayor circles
-### ???
-#ax.plot(x, np.zeros(100), y, "-g")
-#ax.plot(x, y, z, "-b")
-#ax.plot(x, -y, -z, "-b", label = "Equator")
-#ax.plot(np.zeros(100), x, y)
-
-#ax.plot(np.zeros(2), (0,(1-s**2)**.5), (0, s))
-
-#plt.legend(fontsize=12)
-#plt.axis("off")
-#plt.show()
-# End Of Test Side
 
 def main():
   cool = list(set(readable[head[1]]))
@@ -169,10 +133,21 @@ def main():
     #for x in len(readable[head[9]]):
       #try:
 	#plt.plot()
+
+  def reloader():
+    try:
+      os.system("xterm -hold -e sudo python aladin.py")
+      sys.exit()
+    except:
+      tue = Toplevel()
+      tue.wm_title("Error")
+      Label(tue, text="I can't execute xterm, to more info see te help.").grid()
+      tue.mainloop()
+
+    
   def plot2d(): 	#Plot the Location
     ev = Toplevel()
     ev.wm_title("Position Plot (RA, DEC)")
-    ev.protocol('WM_DELETE_WINDOW', ev.destroy)
     fig = plt.figure()
     ax = fig.add_subplot(111, axisbg="black")
     ax.get_xaxis().get_major_formatter().set_scientific(False) #Removing Cientific Notation
@@ -224,6 +199,7 @@ def main():
   filemenu.add_command(label="Exit", command=andother)
   setupmenu = Menu(menu)
   menu.add_cascade(label="Setup", menu=setupmenu)
+  setupmenu.add_command(label="Reload Colors", command=reloader)
   plotmenu = Menu(menu)
   menu.add_cascade(label="Plots", menu=plotmenu)
   plotmenu.add_command(label="Position (RA, DEC)", command=plot2d)
@@ -232,7 +208,7 @@ def main():
   l0 = Label(burn, text="")#\n
   l1 = Label(burn, text="Hello! I made this program to analyse all the data recieved from Simbad, a library of Aladin"
 	     ", the biggest database about astronomy in the world.")
-  l2 = Label(burn, text="If this is your first time I recommend to type 'Help!', where you can find a simple guide of"
+  l2 = Label(burn, text="If this is your first time I recommend to click in 'Help', where you can find a simple guide of"
 	     " how to use Aladin.")
   l1.grid(columnspan = 2)
   l2.grid(columnspan = 2)
