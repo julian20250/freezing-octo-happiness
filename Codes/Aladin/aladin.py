@@ -207,13 +207,11 @@ def main():
     loc = location+"/HTML/help.html" 
     webbrowser.open(loc)
     
-  def another():
-    ev.destroy()
-    burn.destroy()
-    
+
   def andother():
     burn.destroy()
     sys.exit()
+    
   burn = Tk()
   burn.protocol('WM_DELETE_WINDOW', andother)
   burn.wm_title("Analysis From Simbad, Aladin.")
@@ -226,7 +224,6 @@ def main():
   filemenu.add_command(label="Exit", command=andother)
   setupmenu = Menu(menu)
   menu.add_cascade(label="Setup", menu=setupmenu)
-  setupmenu.add_command(label="Reload Colors", command=another)
   plotmenu = Menu(menu)
   menu.add_cascade(label="Plots", menu=plotmenu)
   plotmenu.add_command(label="Position (RA, DEC)", command=plot2d)
