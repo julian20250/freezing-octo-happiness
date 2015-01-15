@@ -180,6 +180,16 @@ If you're in another OS or simply you don't have xterm, you need to adapt this p
   sys.exit()</code></pre>
     Notice that if you click in "Reload Colors" without having xterm it will show an error.</li>
 </ul>
+
+<h3>Index B-V</h3>
+<p>This option is found in the submenu "Plots". The first time you click there, you will find a graphic of B vs B-V, but it doesn't
+include all the data, just the data lower than its mean deviation. The program has predetermined 1 mean deviation. but you can change
+it here.</p>
+<pre><code>dev1, dev2 = deviation(pa, inst, 1)</code></pre>
+<p>This is because when you select the objects in Aladin, there is a minority that have huge values in their data, so, they will mess the graphic up.
+ If you want to see all the data (I think that you wouldn't see anything), you just have to press in the unique option of the menu of the first graphic
+ that appears.</p>
+ 
 <h2>About Aladin</h2>
 <ul>
 <li>Go to the directory called Program that came in this compressed tar from the terminal: </li>
