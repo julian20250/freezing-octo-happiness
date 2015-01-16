@@ -173,6 +173,8 @@ def main():
     ax.get_xaxis().get_major_formatter().set_scientific(False)
     ax.get_xaxis().get_major_formatter().set_useOffset(False)
     agani = list(cool)
+    menu= Menu(tris)
+    tris.config(menu=menu)
     maxim=[]
     for x in xrange(1, len(inst), 2):
       maxim.append(inst[x])
@@ -189,6 +191,7 @@ def main():
     plt.ylabel("Index B-V")
     plt.legend(bbox_to_anchor=(1, .9),
 	       bbox_transform=plt.gcf().transFigure)
+    menu.add_command(label="Histogram", command= lambda: histogram(inst, "Index B-V (All Data)"))
     ax.format_coord = lambda x,y : "B=%g, B-V=%g"%(x, y)
     canvas = FigureCanvasTkAgg(fig, master = tris)
     toolbar = NavigationToolbar2TkAgg(canvas, tris)
@@ -224,10 +227,14 @@ def main():
     inst = list(set(inst)-set(maxim))
     
     dev1, dev2 = deviation(pa, inst, 1)
-
+    menu= Menu(tris)
+    tris.config(menu=menu)
+    
     s=0
+    ner = []
     for x in xrange(len(inst)):
       if pa[maxim[x]]<dev1 and inst[x]<dev2:
+	ner.append(inst[x])
 	if agani.count(readable[head[1]][maxim[x]])==1:
 	  plt.scatter(pa[maxim[x]], inst[x], c=colors[cool.index(readable[head[1]][maxim[x]])],
 	      marker=markers[cool.index(readable[head[1]][maxim[x]])], label = readable[head[1]][maxim[x]])
@@ -237,10 +244,9 @@ def main():
 	      marker=markers[cool.index(readable[head[1]][maxim[x]])])
       else:
 	if s==0:
-	  menu= Menu(tris)
-	  tris.config(menu=menu)
 	  menu.add_command(label="Show All Objects", command=indexer_real)
 	  s+=1
+    menu.add_command(label="Histogram", command= lambda: histogram(ner, "Index B-V"))
     plt.xlabel("B")
     plt.ylabel("Index B-V")
     plt.legend(bbox_to_anchor=(1, .9),
@@ -278,6 +284,21 @@ def main():
     canvas.get_tk_widget().pack()
     toolbar.pack()
     ev.mainloop()
+  
+  def histogram(bust, ram):
+    tris = Toplevel()
+    tris.wm_title(ram+" Histogram")
+    fig = plt.figure()
+    ax = fig.add_subplot(111, axisbg="black")
+    plt.hist(bust, bins=50, histtype="bar", orientation="vertical")
+    plt.xlabel(ram)
+    plt.ylabel("Times Repeated")
+    ax.format_coord = lambda x,y : ram+"=%g, Times Repeated=%g"%(x, y)
+    canvas = FigureCanvasTkAgg(fig, master = tris)
+    toolbar = NavigationToolbar2TkAgg(canvas, tris)
+    canvas.get_tk_widget().pack()
+    toolbar.pack()
+    tris.mainloop()
   
   def helper():
     """
@@ -334,3 +355,4 @@ while True:
 # libreoffice --help
 # http://effbot.org/tkinterbook/tkinter-application-windows.htm
 # https://docs.python.org/2/library/functions.html#reload
+# http://stackoverflow.com/questions/6920302/passing-argument-in-python-tkinter-button-command
