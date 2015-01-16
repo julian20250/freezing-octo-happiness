@@ -106,16 +106,21 @@ for x in table:
 readable = dict(original)
 for x in xrange(4, 15):
   for y in readable[head[x]]:
-    if type(y) == unicode:
-      ind = readable[head[x]].index(y)
-      readable[head[x]].remove(y)
-      readable[head[x]].insert(ind, float(y))      
-
+    if type(y) == unicode:      
+	ind = readable[head[x]].index(y)
+	readable[head[x]].remove(y)
+	readable[head[x]].insert(ind, float(y))      
+      
 for x in xrange(2, 4):
   for y in readable[head[x]]:
       road = y.split(" ")
       road = [float(i) for i in road]
-      cross = road[0]+road[1]/60+road[2]/3600
+      if len(road)==1:
+	cross = road[0]
+      elif len(road)==2:
+	cross=road[0]+road[1]/60
+      elif len(road)==3:
+	cross = road[0]+road[1]/60+road[2]/3600	
       ind = readable[head[x]].index(y)
       readable[head[x]].remove(y)
       readable[head[x]].insert(ind, cross)
@@ -124,6 +129,7 @@ plt.rc("text", usetex=True)
 def main():
   
   def deviation(yo, ey, nun): #Nun is equal to the number of mean deviations
+    #try:
     yo, ey = [x for x in yo if not isinstance(x, str)], [x for x in ey if not isinstance(x, str)]
     mean1, mean2 = sum(yo)/len(yo)*1., sum(ey)/len(ey)*1.
     o1, o2= [], []
@@ -133,6 +139,12 @@ def main():
       o2.append((x-mean2)**2)
     o1, o2 = ((sum(o1)/(len(yo)-1))**.5)*nun, ((sum(o2)/(len(ey)-1))**.5)*nun
     return o1, o2
+    #except (TypeError):
+      #tue = Tk()
+      #tue.wm_title("Error")
+      #Label(tue, text="Something get wrong with B, V Data, take a look.", font=16).grid()
+      #tue.mainloop()
+      
   
   cool = list(set(readable[head[1]]))
   markers = [".", ",", "o", "v", "^", "<", ">", "1", "2", "3",
@@ -148,7 +160,7 @@ def main():
     except:
       tue = Toplevel()
       tue.wm_title("Error")
-      Label(tue, text="I can't execute xterm, to more info see te help.").grid()
+      Label(tue, text="I can't execute xterm, to more info see te help.", font=16).grid()
       tue.mainloop()
 
   def indexer_real(): #B=readable[head[9]], V=readable[head[10]]
@@ -267,13 +279,19 @@ def main():
     ax.get_xaxis().get_major_formatter().set_useOffset(False) #And exponentials
     dawn = list(cool)
     for x in xrange(len(readable[head[2]])):
-      if dawn.count(readable[head[1]][x]) == 1:
-	plt.scatter(readable[head[2]][x], readable[head[3]][x], c=colors[cool.index(readable[head[1]][x])],
-		  marker=markers[cool.index(readable[head[1]][x])], label = readable[head[1]][x])
-	dawn.remove(readable[head[1]][x])
-      else:
-	plt.scatter(readable[head[2]][x], readable[head[3]][x], c=colors[cool.index(readable[head[1]][x])],
-		    marker=markers[cool.index(readable[head[1]][x])])
+      try:
+	if dawn.count(readable[head[1]][x]) == 1:
+	  plt.scatter(readable[head[2]][x], readable[head[3]][x], c=colors[cool.index(readable[head[1]][x])],
+		    marker=markers[cool.index(readable[head[1]][x])], label = readable[head[1]][x])
+	  dawn.remove(readable[head[1]][x])
+	else:
+	  plt.scatter(readable[head[2]][x], readable[head[3]][x], c=colors[cool.index(readable[head[1]][x])],
+		      marker=markers[cool.index(readable[head[1]][x])])
+      except (TypeError):
+	tip = Toplevel()
+	tip.wm_title("Warning")
+	Label(tip, text="Incomplete Data.")
+	tip.mainloop()
     plt.xlabel(r"$RA$")
     plt.ylabel(r"$\delta$", fontsize=15)
     plt.legend(bbox_to_anchor=(1, .9),
