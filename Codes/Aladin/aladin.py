@@ -129,22 +129,21 @@ plt.rc("text", usetex=True)
 def main():
   
   def deviation(yo, ey, nun): #Nun is equal to the number of mean deviations
-    #try:
     yo, ey = [x for x in yo if not isinstance(x, str)], [x for x in ey if not isinstance(x, str)]
-    mean1, mean2 = sum(yo)/len(yo)*1., sum(ey)/len(ey)*1.
+    try:
+      mean1, mean2 = sum(yo)/len(yo)*1., sum(ey)/len(ey)*1.
+    except:
+      tue = Toplevel()
+      tue.wm_title("Error")
+      Label(tue, text="No Data Available.", font=16).grid()
+      tue.mainloop()
     o1, o2= [], []
     for x in yo:
       o1.append((x-mean1)**2)
     for x in ey:
       o2.append((x-mean2)**2)
     o1, o2 = ((sum(o1)/(len(yo)-1))**.5)*nun, ((sum(o2)/(len(ey)-1))**.5)*nun
-    return o1, o2
-    #except (TypeError):
-      #tue = Tk()
-      #tue.wm_title("Error")
-      #Label(tue, text="Something get wrong with B, V Data, take a look.", font=16).grid()
-      #tue.mainloop()
-      
+    return o1, o2    
   
   cool = list(set(readable[head[1]]))
   markers = [".", ",", "o", "v", "^", "<", ">", "1", "2", "3",
