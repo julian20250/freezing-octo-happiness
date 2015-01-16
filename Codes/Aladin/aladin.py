@@ -324,6 +324,7 @@ def main():
   burn.config(menu=menu)
   filemenu = Menu(menu)
   menu.add_cascade(label="File", menu=filemenu)
+  filemenu.add_command(label="Open Aladin", command= lambda: os.system("bash "+location+"/Program/Aladin"))
   filemenu.add_command(label="Exit", command=andother)
   setupmenu = Menu(menu)
   menu.add_cascade(label="Setup", menu=setupmenu)
