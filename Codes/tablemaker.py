@@ -28,10 +28,11 @@ def tablemaker(dat, col, raw, per):
   fle = []
   count = 0
   dar = len(dat)/col
+  deli = int(dar)
   for x in xrange(col):    
-    fle.append(dat[count:dar])
+    fle.append(dat[count:deli])
     count += dar
-    dar += dar
+    deli += dar
   count = 0 
   fil=0
   onl = int(per)
