@@ -21,7 +21,6 @@ def tablemaker(dat, col, raw, per):
   table = (len(dat)/col)/per 
   if (len(dat)/col)%per != 0:
     table += 1
-  print table
   for x in xrange(col):
     d.append("c")
   d="|".join(d)
@@ -46,16 +45,14 @@ def tablemaker(dat, col, raw, per):
 	f.write("& %s "%y)
       f.write("\\\\ \\hline\n")
       for y in xrange(fil, onl):
-	print y
 	f.write("$$%f$$ "%fle[0][y])
 	for z in xrange(col-1):
 	  f.write("& $$%f$$"%fle[z+1][y])
 	f.write("\\\\ \\hline")
-      print ":("
       f.write("\\end{tabular}")
       count +=1
       fil += per
       onl += per
-      if per == len(dat) or per>len(dat):
-	per = len(dat)%table
+      if onl>len(dat):
+	onl = len(dat)
   f.close()
