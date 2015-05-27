@@ -5,6 +5,7 @@ else:
     from tkinter import *
 import tkFont
 import matplotlib.pyplot as plt
+import numpy as np
 
 def error(st):
   bel = Tk()
@@ -21,18 +22,24 @@ def each(of, us, ans, do):
   for x, y, z in zip(of, us, ans):
     plt.scatter(x, y)
     plt.text(x, y, str(z))
-  xmax, xmin = max(of)+1, min(of)+1
-  ymax, ymin = max(us)+1, min(us)+1
+  xmax, xmin = max(of)+1, min(of)-1
+  ymax, ymin = max(us)+1, min(us)-1
   m={}
   b={}
-  count=0
+  count=1
   for x, y, z in zip(of[:-1], us[:-1], xrange(1, len(of))):
     for k, l in zip(of[z:], us[z:]):
-      q = 1.*(k-x)/(l-y)
-      r = y-q*x
-      m[str(count)+str(z)]=-float(q)
-      b[str(count)+str(z)]=float(r) #Here
-    count+=1    
+      try:
+	q = (1.*l-y)/(k-x)
+	q = -1./q
+      except ZeroDivisionError:
+	q = 0
+      r = ((y+l)/2.)-q*((x+k)/2.)
+      m[str(z)+str(count)]=float(q)
+      b[str(z)+str(count)]=float(r) #Here
+      count+=1    
+  for x in m:
+    plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
   plt.show()
   
 def that(of, us, ans):
@@ -66,7 +73,6 @@ def ash(on, peg):
       if x<0:
 	error("If you select gravity there is no negative potential")
 	raise EnvironmentError("If you select gravity there is no negative potential")  
-  if int(h.get())==1:
     that(where, am, I)
   
   if int(h.get())==2:
@@ -78,6 +84,7 @@ def ash(on, peg):
     Radiobutton(nit, text="Positive", variable=bel, value=1, font=helv14).grid()
     Radiobutton(nit, text="Negative", variable=bel, value=-1, font=helv14).grid()
     Button(nit, text="Next >", command=lambda: each(where, am, I, bel), font=helv14).grid(sticky=E)
+    nit.mainloop()
     
 
 def eye(my, dam):
@@ -108,11 +115,11 @@ def eye(my, dam):
   d={}
   for x in xrange(1, an+1):
     Label(bas, text="Particle %i"%x, font=helv14).grid(row=x)
-    d[str(x)+"1"]=Entry(bas)
+    d[str(x)+"1"]=Entry(bas, justify=CENTER)
     d[str(x)+"1"].grid(row=x, column=1)
-    d[str(x)+"2"]=Entry(bas)
+    d[str(x)+"2"]=Entry(bas, justify=CENTER)
     d[str(x)+"2"].grid(row=x, column=2)
-    d[str(x)+"3"]=Entry(bas)
+    d[str(x)+"3"]=Entry(bas, justify=CENTER)
     d[str(x)+"3"].grid(row=x, column=3)
   Button(bas, text="Cancel", command = bas.destroy, font=helv14).grid(row=x+1, column=0, sticky=W)
   Button(bas, text="Next >", command = lambda: ash(d, an), font=helv14).grid(row=x+1, column=3, sticky=E)
@@ -125,7 +132,7 @@ def girl():
   ab.protocol("WM_DETELE_WINDOW", nothing)
   ab.wm_title("Became")
   Label(ab, text="Write the number of particles >", font=helv14).grid(row=0, sticky=W)
-  eco = Entry(ab)
+  eco = Entry(ab,  justify=CENTER)
   eco.grid(row=0, column=1)
   Button(ab, text="Cancel", command = ab.destroy, font=helv14).grid(sticky=W)
   Button(ab, text="Next >", command = lambda: eye(eco, ab), font=helv14).grid(row=1, column=1, sticky=E)
