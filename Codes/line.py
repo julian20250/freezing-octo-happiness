@@ -35,11 +35,18 @@ def each(of, us, ans, do):
       except ZeroDivisionError:
 	q = 0
       r = ((y+l)/2.)-q*((x+k)/2.)
-      m[str(z)+str(count)]=float(q)
-      b[str(z)+str(count)]=float(r) #Here
+      if l-y == 0:
+	m[str(z)+str(count)]=None
+	b[str(z)+str(count)]=(x+k)/2.
+      else:
+	m[str(z)+str(count)]=float(q)
+	b[str(z)+str(count)]=float(r) #Here
       count+=1    
   for x in m:
-    plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
+    if m[x]==None:
+      plt.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
+    else:
+      plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
   plt.show()
   
 def that(of, us, ans):
