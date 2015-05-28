@@ -26,6 +26,8 @@ def each(of, us, ans, do):
   ymax, ymin = max(us)+1, min(us)-1
   m={}
   b={}
+  birth = {}
+  calm = {}
   count=1
   for x, y, z in zip(of[:-1], us[:-1], xrange(1, len(of))):
     for k, l in zip(of[z:], us[z:]):
@@ -42,11 +44,62 @@ def each(of, us, ans, do):
 	m[str(z)+str(count)]=float(q)
 	b[str(z)+str(count)]=float(r) #Here
       count+=1    
+  count = 1
   for x in m:
-    if m[x]==None:
-      plt.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
+    birth[str(count)]=[]
+    calm[str(count)]=[]
+    if m[x]==None:      
+      birth[str(count)]=np.full(50, b[x])
+      calm[str(count)]=np.linspace(ymin, ymax)
+      #plt.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
     else:
-      plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
+      birth[str(count)]=np.linspace(xmin, xmax)
+      calm[str(count)]=[m[x]*y+b[x] for y in np.linspace(xmin, xmax)]
+      #plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
+  les = do
+  print les
+  sorrow = {}
+  omin = {}
+  for a in xrange(1, len(calm)+1):
+      sorrow[str(a)]=[]
+      omin[str(a)]=[]
+      for x, y in zip(birth[str(a)], calm[str(a)]):
+	sorrow[str(a)].append(x)
+	omin[str(a)].append(y)
+	Fx=[]
+	Fy=[]
+	for q, w, e in zip(of, us, ans):
+	  xcords = x-q 
+	  ycords = y-w
+	  d = ((xcords)**2+(ycords)**2)**.5	
+	  f = 1.*les*e/(d**2)
+	  Fx.append(1.*xcords*f/d)
+	  Fy.append(1.*ycords*f/d)
+	xf=sum(Fx)
+	yf=sum(Fy)
+	norm = ((xf**2+yf**2)**.5)*10 #Last item (10) makes it smaller to more steps
+	sorrow[str(a)].append(x+1.*xf/norm)
+	omin[str(a)].append(y+1.*yf/norm)
+	count=0
+	while count<100: #How many steps
+	  x=sorrow[str(a)][-1]
+	  y=omin[str(a)][-1]
+	  Fx=[]
+	  Fy=[]
+	  for q, w, e in zip(of, us, ans):
+	    xcords = x-q 
+	    ycords = y-w
+	    d = ((xcords)**2+(ycords)**2)**.5	
+	    f = 1.*les*e/(d**2)
+	    Fx.append(1.*xcords*f/d)
+	    Fy.append(1.*ycords*f/d)
+	  xf=sum(Fx)
+	  yf=sum(Fy)
+	  norm = ((xf**2+yf**2)**.5)*10 #Last item (10) makes it smaller to more steps
+	  sorrow[str(a)].append(x+1.*xf/norm)
+	  omin[str(a)].append(y+1.*yf/norm)
+	  count +=1
+	plt.plot(sorrow[str(a)], omin[str(a)])
   plt.show()
   
 def that(of, us, ans):
@@ -86,11 +139,8 @@ def ash(on, peg):
     nit = Tk()
     nit.wm_title("Probe Charge")
     Label(nit, text="Select the Nature of the Charge", font=helv20).grid()
-    bel = IntVar()
-    bel.set(1)
-    Radiobutton(nit, text="Positive", variable=bel, value=1, font=helv14).grid()
-    Radiobutton(nit, text="Negative", variable=bel, value=-1, font=helv14).grid()
-    Button(nit, text="Next >", command=lambda: each(where, am, I, bel), font=helv14).grid(sticky=E)
+    Button(nit, text="Positive", command=lambda: each(where, am, I, 1), font=helv14).grid()
+    Button(nit, text="Negative", command=lambda: each(where, am, I, -1), font=helv14).grid()
     nit.mainloop()
     
 
