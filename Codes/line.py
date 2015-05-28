@@ -46,26 +46,27 @@ def each(of, us, ans, do):
       count+=1    
   count = 1
   for x in m:
-    birth[str(count)]=[]
-    calm[str(count)]=[]
     if m[x]==None:      
-      birth[str(count)]=np.full(50, b[x])
-      calm[str(count)]=np.linspace(ymin, ymax)
+      birth[str(count)]=np.full(20, b[x])
+      calm[str(count)]=np.linspace(ymin, ymax, 20)
       #plt.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
     else:
-      birth[str(count)]=np.linspace(xmin, xmax)
-      calm[str(count)]=[m[x]*y+b[x] for y in np.linspace(xmin, xmax)]
+      birth[str(count)]=np.linspace(xmin, xmax, 20)
+      calm[str(count)]=[m[x]*y+b[x] for y in np.linspace(xmin, xmax, 20)]
       #plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
+    count+=1
   les = do
-  print les
   sorrow = {}
   omin = {}
   for a in xrange(1, len(calm)+1):
       sorrow[str(a)]=[]
       omin[str(a)]=[]
-      for x, y in zip(birth[str(a)], calm[str(a)]):
-	sorrow[str(a)].append(x)
-	omin[str(a)].append(y)
+      zem = 0
+      for x, y in zip(birth[str(a)], calm[str(a)]):	
+	sorrow[str(a)].append([]) 
+	sorrow[str(a)][zem].append(x)
+	omin[str(a)].append([])
+	omin[str(a)][zem].append(y)
 	Fx=[]
 	Fy=[]
 	for q, w, e in zip(of, us, ans):
@@ -78,12 +79,12 @@ def each(of, us, ans, do):
 	xf=sum(Fx)
 	yf=sum(Fy)
 	norm = ((xf**2+yf**2)**.5)*10 #Last item (10) makes it smaller to more steps
-	sorrow[str(a)].append(x+1.*xf/norm)
-	omin[str(a)].append(y+1.*yf/norm)
+	sorrow[str(a)][zem].append(x+1.*xf/norm)
+	omin[str(a)][zem].append(y+1.*yf/norm)
 	count=0
 	while count<100: #How many steps
-	  x=sorrow[str(a)][-1]
-	  y=omin[str(a)][-1]
+	  x=sorrow[str(a)][zem][-1]
+	  y=omin[str(a)][zem][-1]
 	  Fx=[]
 	  Fy=[]
 	  for q, w, e in zip(of, us, ans):
@@ -96,10 +97,13 @@ def each(of, us, ans, do):
 	  xf=sum(Fx)
 	  yf=sum(Fy)
 	  norm = ((xf**2+yf**2)**.5)*10 #Last item (10) makes it smaller to more steps
-	  sorrow[str(a)].append(x+1.*xf/norm)
-	  omin[str(a)].append(y+1.*yf/norm)
+	  sorrow[str(a)][zem].append(x+1.*xf/norm)
+	  omin[str(a)][zem].append(y+1.*yf/norm)
 	  count +=1
-	plt.plot(sorrow[str(a)], omin[str(a)])
+	zem +=1
+  for x in xrange(1, len(calm)+1):
+    for y in xrange(len(birth[str(x)])):
+      plt.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
   plt.show()
   
 def that(of, us, ans):
