@@ -19,9 +19,12 @@ def entry(c):
 
 def each(of, us, ans, do):
   f = plt.figure()
+  ax= f.add_subplot("111", axisbg="white") #Change Color
+  ax.axes.get_xaxis().set_visible(False)
+  ax.axes.get_yaxis().set_visible(False)
   for x, y, z in zip(of, us, ans):
-    plt.scatter(x, y)
-    plt.text(x, y, str(z))
+    ax.scatter(x, y)
+    ax.text(x, y, str(z))
   xmax, xmin = max(of)+1, min(of)-1
   ymax, ymin = max(us)+1, min(us)-1
   m={}
@@ -49,11 +52,11 @@ def each(of, us, ans, do):
     if m[x]==None:      
       birth[str(count)]=np.full(20, b[x])
       calm[str(count)]=np.linspace(ymin, ymax, 20)
-      #plt.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
+      #ax.plot(np.full(50, b[x]), np.linspace(ymin, ymax))
     else:
       birth[str(count)]=np.linspace(xmin, xmax, 20)
       calm[str(count)]=[m[x]*y+b[x] for y in np.linspace(xmin, xmax, 20)]
-      #plt.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
+      #ax.plot(np.linspace(xmin, xmax) , [m[x]*y+b[x] for y in np.linspace(xmin, xmax)])
     count+=1
   les = do
   sorrow = {}
@@ -103,16 +106,9 @@ def each(of, us, ans, do):
 	zem +=1
   for x in xrange(1, len(calm)+1):
     for y in xrange(len(birth[str(x)])):
-      plt.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
+      ax.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
   plt.show()
-  
-def that(of, us, ans):
-  f = plt.figure()  
-  for x, y, z in zip(of, us, ans):
-    plt.scatter(x, y)
-    plt.text(x, y, str(z))
-  plt.show()
-  
+    
 def ash(on, peg):
   if len(on) != peg*3:
     error("You forgot to type one data.")
@@ -137,7 +133,7 @@ def ash(on, peg):
       if x<0:
 	error("If you select gravity there is no negative potential")
 	raise EnvironmentError("If you select gravity there is no negative potential")  
-    that(where, am, I)
+    each(where, am, I, -1)
   
   if int(h.get())==2:
     nit = Tk()
