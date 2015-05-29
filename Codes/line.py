@@ -20,13 +20,15 @@ def entry(c):
 def each(of, us, ans, do):
   f = plt.figure()
   ax= f.add_subplot("111", axisbg="white") #Change Color
-  ax.axes.get_xaxis().set_visible(False)
-  ax.axes.get_yaxis().set_visible(False)
+  ax.axes.get_xaxis().set_visible(False) #Comment this if
+  ax.axes.get_yaxis().set_visible(False) #you want to see the axis
   for x, y, z in zip(of, us, ans):
     ax.scatter(x, y)
     ax.text(x, y, str(z))
   xmax, xmin = max(of)+1, min(of)-1
   ymax, ymin = max(us)+1, min(us)-1
+  ax.set_xlim([xmin, xmax]) #Change this to 
+  ax.set_ylim([ymin, ymax]) #set limits
   m={}
   b={}
   birth = {}
@@ -109,7 +111,7 @@ def each(of, us, ans, do):
       ax.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
   plt.show()
     
-def ash(on, peg):
+def ash(on, peg, daa):
   if len(on) != peg*3:
     error("You forgot to type one data.")
     raise EnvironmentError("You forgot to type one data.")
@@ -117,7 +119,10 @@ def ash(on, peg):
   mov = []
   for x in xrange(1, peg+1):
     for y in xrange(1, 4):
-      mov.append(entry(on[str(x)+str(y)]))
+      if daa==1:
+	mov.append(entry(on[str(x)+str(y)]))
+      elif daa==2:
+	mov.append(on[str(x)+str(y)])
   try:
     mov = [float(x) for x in mov]
   except ValueError:
@@ -144,47 +149,56 @@ def ash(on, peg):
     nit.mainloop()
     
 
-def eye(my, dam):
-  bas = Tk()
-  if int(h.get()) == 1:
-    ing= "Gravity Potential"
-  elif int(h.get()) == 2:
-    ing= "Electromagnetic Potential"
-    
-  bas.wm_title("Particles")
-  an = entry(my)   
-  dam.destroy()
+def eye(my, dam, ore):
+  an = entry(my)  
   try:
-    an = int(an)
+      an = int(an)
   except ValueError:
     error("No integer inserted.")
     raise ValueError("No integer inserted.")
-    bas.destroy()
-  if an <2:
-    error("(%i) This value must be bigger or equal than 2"%an)
-    raise EnvironmentError("(%i) This value must be bigger or equal than 1"%an)
-    bas.destroy()
-    
-  Label(bas, text="Particle", font=helv20).grid(row=0, column=0)
-  Label(bas, text="X", font=helv20).grid(row=0, column=1)
-  Label(bas, text="Y", font=helv20).grid(row=0, column=2)
-  Label(bas, text=ing, font=helv20).grid(row=0, column=3)
-  d={}
-  for x in xrange(1, an+1):
-    Label(bas, text="Particle %i"%x, font=helv14).grid(row=x)
-    d[str(x)+"1"]=Entry(bas, justify=CENTER)
-    d[str(x)+"1"].grid(row=x, column=1)
-    d[str(x)+"2"]=Entry(bas, justify=CENTER)
-    d[str(x)+"2"].grid(row=x, column=2)
-    d[str(x)+"3"]=Entry(bas, justify=CENTER)
-    d[str(x)+"3"].grid(row=x, column=3)
-  Button(bas, text="Cancel", command = bas.destroy, font=helv14).grid(row=x+1, column=0, sticky=W)
-  Button(bas, text="Next >", command = lambda: ash(d, an), font=helv14).grid(row=x+1, column=3, sticky=E)
-   
+  if ore == 1:
+    bas = Tk()
+    if int(h.get()) == 1:
+      ing= "Gravity Potential"
+    elif int(h.get()) == 2:
+      ing= "Electromagnetic Potential"
+    bas.wm_title("Particles") 
+    dam.destroy()    
+    if an <2:
+      error("(%i) This value must be bigger or equal than 2"%an)
+      raise EnvironmentError("(%i) This value must be bigger or equal than 1"%an)
+      bas.destroy()
+      
+    Label(bas, text="Particle", font=helv20).grid(row=0, column=0)
+    Label(bas, text="X", font=helv20).grid(row=0, column=1)
+    Label(bas, text="Y", font=helv20).grid(row=0, column=2)
+    Label(bas, text=ing, font=helv20).grid(row=0, column=3)
+    d={}
+    for x in xrange(1, an+1):
+      Label(bas, text="Particle %i"%x, font=helv14).grid(row=x)
+      d[str(x)+"1"]=Entry(bas, justify=CENTER)
+      d[str(x)+"1"].grid(row=x, column=1)
+      d[str(x)+"2"]=Entry(bas, justify=CENTER)
+      d[str(x)+"2"].grid(row=x, column=2)
+      d[str(x)+"3"]=Entry(bas, justify=CENTER)
+      d[str(x)+"3"].grid(row=x, column=3)
+    Button(bas, text="Cancel", command = bas.destroy, font=helv14).grid(row=x+1, column=0, sticky=W)
+    Button(bas, text="Next >", command = lambda: ash(d, an, ore), font=helv14).grid(row=x+1, column=3, sticky=E)
+
+  elif ore==2:
+    d={}
+    for x in xrange(1, an+1):
+      d[str(x)+"1"]=np.random.randint(-11,11) #xmin and xmax
+      d[str(x)+"2"]=np.random.randint(-11,11) #ymin and ymax
+      if int(h.get())==1:
+	d[str(x)+"3"]=np.random.randint(11) #max gravity potential
+      elif int(h.get())==2:
+	d[str(x)+"3"]=np.random.randint(-11,11) #min and max e	lectromagnetic potential
+    ash(d, an, ore)
 def nothing():
   pass
 
-def girl():
+def girl(fem):
   ab = Tk()
   ab.protocol("WM_DETELE_WINDOW", nothing)
   ab.wm_title("Became")
@@ -192,7 +206,7 @@ def girl():
   eco = Entry(ab,  justify=CENTER)
   eco.grid(row=0, column=1)
   Button(ab, text="Cancel", command = ab.destroy, font=helv14).grid(sticky=W)
-  Button(ab, text="Next >", command = lambda: eye(eco, ab), font=helv14).grid(row=1, column=1, sticky=E)
+  Button(ab, text="Next >", command = lambda: eye(eco, ab, fem), font=helv14).grid(row=1, column=1, sticky=E)
   ab.mainloop()
     
 p = Tk()
@@ -209,7 +223,8 @@ menu = Menu(p)
 p.config(menu=menu)
 filemenu = Menu(menu)
 menu.add_cascade(label="File", menu=filemenu, font=helv20)
-filemenu.add_command(label="Start", command=lambda: girl(), font=helv14)
+filemenu.add_command(label="Start", command=lambda: girl(1), font=helv14)
+filemenu.add_command(label="Random", command=lambda: girl(2), font=helv14)
 filemenu.add_command(label="Close", command=lambda: sys.exit(), font=helv14)
 Label(p, text="Select Mode:", font=helv20).grid()
 h = IntVar()
