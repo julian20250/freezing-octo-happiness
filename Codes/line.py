@@ -1,3 +1,5 @@
+#References for animation: http://matplotlib.org/1.4.2/examples/animation/basic_example.html 
+#http://matplotlib.org/api/animation_api.html
 import sys
 if sys.version_info[0] < 3:
     from Tkinter import *
@@ -22,7 +24,7 @@ def update_line(num, data, line):
     return line,
 
 def each(of, us, ans, do):
-  fig = plt.figure()
+  fig = plt.figure(facecolor="white")
   if entry(mile) ==1:
     ax= fig.add_subplot("111", axisbg="white") #Change Color
     ax.axes.get_xaxis().set_visible(False) #Comment this if
@@ -36,6 +38,7 @@ def each(of, us, ans, do):
     ax.set_xlim([xmin, xmax]) #Change this to 
     ax.set_ylim([ymin, ymax]) #set limits
   if entry(mile) ==2:
+    plt.axis("off") #Comment this if you want to see the axis
     for x, y, z in zip(of, us, ans):
       plt.scatter(x, y)
       plt.text(x, y, str(z))
@@ -132,8 +135,15 @@ def each(of, us, ans, do):
     line_ani={}
     for x in xrange(count):
       l, = plt.plot([], [], 'r-')
-      line_ani[str(x)]= animation.FuncAnimation(fig, update_line, 104, fargs=(puss[str(x)], l),
-						interval=10) #Interval = how it takes
+      line_ani[str(x)]= animation.FuncAnimation(fig, update_line, 120, fargs=(puss[str(x)], l),
+						interval=10, blit=False) #Interval = how it takes
+    
+    #If you want to save the animation discomment the next lines, also make sure that you have installed ffmpeg, 
+    #which is needed to save the animation. You also should want to make a bigger interval to have a long video.
+    #mess = []
+    #for x in xrange(count):
+      #mess.append(line_ani[str(x)])
+    #mess[0].save("a.mp4", extra_anim=mess[1:])
   plt.show()
     
 def ash(on, peg, daa):
