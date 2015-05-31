@@ -6,6 +6,7 @@ else:
 import tkFont
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.animation as animation
 
 def error(st):
   bel = Tk()
@@ -16,19 +17,30 @@ def error(st):
 def entry(c):
   return c.get()
 
+def update_line(num, data, line):
+    line.set_data(data[...,:num])
+    return line,
 
 def each(of, us, ans, do):
-  f = plt.figure()
-  ax= f.add_subplot("111", axisbg="white") #Change Color
-  ax.axes.get_xaxis().set_visible(False) #Comment this if
-  ax.axes.get_yaxis().set_visible(False) #you want to see the axis
-  for x, y, z in zip(of, us, ans):
-    ax.scatter(x, y)
-    ax.text(x, y, str(z))
+  fig = plt.figure()
+  if entry(mile) ==1:
+    ax= fig.add_subplot("111", axisbg="white") #Change Color
+    ax.axes.get_xaxis().set_visible(False) #Comment this if
+    ax.axes.get_yaxis().set_visible(False) #you want to see the axis
+    for x, y, z in zip(of, us, ans):
+      ax.scatter(x, y)
+      ax.text(x, y, str(z))
   xmax, xmin = max(of)+1, min(of)-1
   ymax, ymin = max(us)+1, min(us)-1
-  ax.set_xlim([xmin, xmax]) #Change this to 
-  ax.set_ylim([ymin, ymax]) #set limits
+  if entry(mile) ==1:
+    ax.set_xlim([xmin, xmax]) #Change this to 
+    ax.set_ylim([ymin, ymax]) #set limits
+  if entry(mile) ==2:
+    for x, y, z in zip(of, us, ans):
+      plt.scatter(x, y)
+      plt.text(x, y, str(z))
+    plt.xlim(xmin, xmax) #Change this to 
+    plt.ylim(ymin, ymax) #set limits
   m={}
   b={}
   birth = {}
@@ -106,9 +118,22 @@ def each(of, us, ans, do):
 	  omin[str(a)][zem].append(y+1.*yf/norm)
 	  count +=1
 	zem +=1
-  for x in xrange(1, len(calm)+1):
-    for y in xrange(len(birth[str(x)])):
-      ax.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
+  if entry(mile) ==1:
+    for x in xrange(1, len(calm)+1):
+      for y in xrange(len(birth[str(x)])):
+	ax.plot(sorrow[str(x)][y], omin[str(x)][y], "r")
+  if entry(mile) ==2:
+    puss = {}
+    count=0
+    for x in xrange(1, len(calm)+1):
+      for y in xrange(len(birth[str(x)])):
+	puss[str(count)]=np.hstack((np.array(sorrow[str(x)][y]), np.array(omin[str(x)][y]))).reshape((2, len(sorrow[str(x)][y])))
+	count+=1
+    line_ani={}
+    for x in xrange(count):
+      l, = plt.plot([], [], 'r-')
+      line_ani[str(x)]= animation.FuncAnimation(fig, update_line, 104, fargs=(puss[str(x)], l),
+						interval=10) #Interval = how it takes
   plt.show()
     
 def ash(on, peg, daa):
@@ -231,4 +256,9 @@ h = IntVar()
 h.set(1)
 Radiobutton(p, text="Gravity", variable=h, value=1, font=helv14).grid()
 Radiobutton(p, text="Electromagnetism", variable=h, value=2, font=helv14).grid()
+Label(p, text="Select Graphic Mode", font=helv20).grid()
+mile= IntVar()
+mile.set(1)
+Radiobutton(p, text="Static", variable=mile, value=1, font=helv14).grid()
+Radiobutton(p, text="Dinamic", variable=mile, value=2, font=helv14).grid()
 p.mainloop()
