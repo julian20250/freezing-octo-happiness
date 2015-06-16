@@ -1,5 +1,7 @@
 #References for animation: http://matplotlib.org/1.4.2/examples/animation/basic_example.html 
 #http://matplotlib.org/api/animation_api.html
+#http://sam-dolan.staff.shef.ac.uk/mas212/lectures/l5.pdf
+#https://jakevdp.github.io/blog/2013/02/16/animating-the-lorentz-system-in-3d/
 import sys
 if sys.version_info[0] < 3:
     from Tkinter import *
@@ -9,6 +11,7 @@ import tkFont
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
+from matplotlib.lines import Line2D
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 
 def remover(lan, drum, dor, kain, wist, M):
@@ -28,29 +31,47 @@ def error(st):
 def entry(c):
   return c.get()
 
-def update_line(num, data, line):
-    line.set_data(data[...,:num])
+def update_line(num, data, line, aul): #Num = xrange(Frames)
+    if aul == 1:
+      line.set_data(data[0][num], data[1][num])
+    elif aul == 0:
+      line.set_data(data[...,:num])
     return line,
-
+  
+def init(line):
+  line.set_data([], [])
+  return line
+  
 def each(of, us, ans, do, last): #where, am, I
-  fig = plt.figure(facecolor="white")
-  if entry(mile) ==1:
-    ax= fig.add_subplot("111", axisbg="white") #Change Color
-    ax.axes.get_xaxis().set_visible(False) #Comment this if
-    ax.axes.get_yaxis().set_visible(False) #you want to see the axis
-    for x, y, z in zip(of, us, ans):
-      ax.scatter(x, y)
-      ax.text(x, y, str(z))
+  fig = plt.figure(facecolor="black")
   xmax, xmin = max(of)+1, min(of)-1
   ymax, ymin = max(us)+1, min(us)-1
   if entry(mile) ==1:
+    ax= fig.add_subplot("111", axisbg="black") #Change Color
+    for x, y, z in zip(of, us, ans):
+      if z<0:
+	hud = "blue"
+      elif z>0:
+	hud= "green"
+      else:
+	hud="white"
+      ax.scatter(x, y, s=abs(z*100), color=hud)
+      ax.text(x, y, str(z), color="white")
+    ax.axes.get_xaxis().set_visible(False) #Comment this if
+    ax.axes.get_yaxis().set_visible(False) #you want to see the axis
     ax.set_xlim([xmin, xmax]) #Change this to 
     ax.set_ylim([ymin, ymax]) #set limits
   if entry(mile) ==2:
     plt.axis("off") #Comment this if you want to see the axis
     for x, y, z in zip(of, us, ans):
-      plt.scatter(x, y)
-      plt.text(x, y, str(z))
+      if z<0:
+	hud = "blue"
+      elif z>0:
+	hud = "green"
+      else:
+	hud = "white"
+      plt.scatter(x, y, s= abs(z*100), color=hud)
+      plt.text(x, y, str(z), color="white")
     plt.xlim(xmin, xmax) #Change this to 
     plt.ylim(ymin, ymax) #set limits
   #Those equipotential lines
@@ -139,19 +160,16 @@ def each(of, us, ans, do, last): #where, am, I
 	  omin[str(a)][zem].append(y+1.*yf/norm)
 	  count +=1
 	zem +=1
+  if les == 1:
+    hud = "g"
+  if les == -1:
+    hud= "b"
   if entry(mile) ==1:
+
     for x in xrange(1, len(calm)+1):
       for y in xrange(len(birth[str(x)])):
-	ax.plot(sorrow[str(x)][y], omin[str(x)][y], "r")  
+	ax.plot(sorrow[str(x)][y], omin[str(x)][y], hud)  
   
-  if entry(mile) ==1:
-    canvas = FigureCanvasTkAgg(fig, master = p)
-    canvas.show()
-    toolbar = NavigationToolbar2TkAgg(canvas, p)
-    dea = canvas.get_tk_widget()
-    dea.grid(row=0, column=4, rowspan=last)
-    toolbar.grid(row=last, column=4)
-    p.mainloop()
   if entry(mile) ==2:
     puss = {}
     count=0
@@ -161,11 +179,15 @@ def each(of, us, ans, do, last): #where, am, I
 	count+=1
     line_ani={}
     for x in xrange(count):
-      l, = plt.plot([], [], 'r-')
-      line_ani[str(x)]= animation.FuncAnimation(fig, update_line, frames=130, fargs=(puss[str(x)], l),
-						interval=15, blit=False) #Interval = how it takes
-    plt.show()
-    p.mainloop()
+      if entry(rest) == 1:
+	l2,= plt.plot([],[], hud+"-")
+	line_ani[str(x)+str(x)]= animation.FuncAnimation(fig, update_line, frames=102, fargs=(puss[str(x)], l2, 0),
+						interval=10, blit=False) #Interval = how it takes
+      l, = plt.plot([], [], hud+"o")
+      line_ani[str(x)]= animation.FuncAnimation(fig, update_line, frames=102, fargs=(puss[str(x)], l, 1), init_func= lambda: init(l),
+						interval=10, blit=False) #Interval = how it takes
+  plt.show()
+  p.mainloop()
     
     #If you want to save the animation discomment the next lines, also make sure that you have installed ffmpeg, 
     #which is needed to save the animation. You also should want to make a bigger interval to have a long video.
@@ -321,6 +343,10 @@ while True:
   Label(p, text = "Select Particle Generator:").grid(row=0, column=2)
   Radiobutton(p, text="Manual", variable=moz, value=1).grid(row=1, column=2)
   Radiobutton(p, text="Random", variable=moz, value=2).grid(row=2, column=2)
+  Label(p, text="Options:").grid(row=0, column=3)
+  rest= IntVar()
+  check = Checkbutton(p, text="Enable trayectories (only dinamic mode)", variable=rest, onvalue=1, offvalue=0)
+  check.grid(row=1, column=3)
   Button(p, text="Start", command = lambda: girl(p)).grid(sticky=E, column=2)  
   art = 9
   p.config(menu=menu)
