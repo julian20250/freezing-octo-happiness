@@ -175,9 +175,9 @@ def fermata(mistic):
       count+=1
     line_ani={}
     for x in xrange(count):
-      if pot[x-1]<0:
+      if pot[x]<0:
 	hud="b"
-      elif pot[x-1]>0:
+      elif pot[x]>0:
 	hud="g"
       else:
 	hud="w"      
