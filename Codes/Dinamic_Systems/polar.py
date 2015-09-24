@@ -1,7 +1,3 @@
-"""
-Demo of a line plot on a polar axis.
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -20,16 +16,22 @@ mass = [3.302e23, 4.869e24, 5.9736e24, 6.4185e23, 1.899e27, 5.688e26, 8.68e24,1.
 velocity = [47.8*1000, 35.0214*1000, 29.78*1000, 24.077*1000,13.0697*1000, 9672.4, 6.81*1000, 5.4778*1000]
 mean_r = [57894376*1000, 108208930*1000, 149597870.691*1000,227939100*1000, 778412026*1000, 1.426e12, 2.8709722e12,
 	  4503443661*1000]
+pro=input("One/Two Body Problem? > ")
+
+if pro!=1 and pro!=2:
+  print "Invalid Data."
+  raise SystemExit
+if pro==2:
+  mass = [1.*M*x/(M+x) for x in mass]
 number = input("How Many Planets? > ")
-if number>18 or number<1:
+if number>8 or number<1:
   print "Invalid Data."
   raise SystemExit
 
 L = [x*y*z for x,y,z in zip(mass, velocity, mean_r)]
+
 K = [G*x*M for x in mass]
-
 E = [(x*y**2)/2.-1.*z/r for x,y,z,w,r in zip(mass, velocity, K, L, mean_r)]
-
 angle = [np.linspace(0, 2*3.141592, 240), np.linspace(0, 2*3.141592, 620), np.linspace(0, 2*3.141592, 1000), np.linspace(0, 2*3.141592, 1881),
 	 np.linspace(0, 2*3.141592, 11860), np.linspace(0, 2*3.141592, 29460), np.linspace(0, 2*3.141592, 84010), np.linspace(0, 2*3.141592, 164790)]
 eccentricity = [(2*E[x]*L[x]**2/(mass[x]*K[x]**2)+1)**.5 for x in xrange(number)]
@@ -74,3 +76,5 @@ ax.yaxis.label.set_color('white')
 ax.tick_params(axis='y', colors='white')
 #plt.savefig("polar.png", facecolor="black")
 plt.show()
+
+
