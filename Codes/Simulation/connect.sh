@@ -10,5 +10,6 @@ http_proxy="http://"$a":"$b"@proxyapp.unal.edu.co:8080/"
 export http_proxy=$http_proxy
 export https_proxy=$http_proxy
 http_proxy=''
+echo "Always that you will use sudo, do it as 'sudo -E' to import proxies"
 echo
 fi
