@@ -16,88 +16,74 @@ if a!=1 and a!=2:
 print "\n"
 if a==1:
   #masa
-  m=input("Mass (m) > ")
+  #m=input("Mass (m) > ")
+  m=5.97e24
   mu=ctes.gravitational_constant*m	
   # vectores posicion y velocidad con sus normas
-  r,v=[],[]
-  r.append(input("Position (x) > "))  
-  r.append(input("Position (y) > "))
-  r.append(input("Position (z) > "))
-  v.append(input("Velocity (v_x) > "))
-  v.append(input("Velocity (v_y) > "))
-  v.append(input("Velocity (v_z) > "))
+  r,v=[-6045,-3490,2500],[-3.457,6.618,2.533]
+  #r.append(input("Position (x) > "))  
+  #r.append(input("Position (y) > "))
+  #r.append(input("Position (z) > "))
+  #v.append(input("Velocity (v_x) > "))
+  #v.append(input("Velocity (v_y) > "))
+  #v.append(input("Velocity (v_z) > "))
   
-  r=np.array(r)
-  v=np.array(v)
+  r=np.array(r)*1000
+  v=np.array(v)*1000
   nr=np.linalg.norm(r)
   nv=np.linalg.norm(v)
+  radial_v= np.dot(r,v)/nr
   print "Position Vector: ", r
   print "Velocity Vector: ", v
-  #momento angular
-  h=np.cross(r,v)
-  nh=np.linalg.norm(h)
-  #Energia
-  E=((nv**2)/2.0)-(mu/nr)
-  #Semieje mayor
-  a=-mu/(2.0*E)
-  #Tipo de orbita
-  if E < 0:
-    print ("Closed Orbit")
-    if E == a:
-      print ("Circular Orbit")
-    else:
-      print ("Eliptic Orbit")
-  #Excentricidad
-  e=np.cross(v,h)/mu-r*(1/nr)
-  ne=np.linalg.norm(e)
-  #Vector unitario z
-  k=np.array([0,0,1])
-  #Inclinacion
-  i=np.degrees(np.arccos(np.dot(np.cross(r,v),k)/nh))
-  #vector que apunta en la direccion de la linea del nodo ascendente
-  n=np.cross(k,h)
-  nn=np.linalg.norm(n)
-  #Omega=np.array([np.arccos(n[0]*(1/nn)),np.arcsin(n[1]*(1/nn))])
-  #Omegan=np.linalg.norm(Omega)
-  #Nodo ascendente
-  Omega=np.degrees(np.arccos(n[0]*(1/nn)))
-  #Argumento del perigeo
-  if np.dot(e,k)>0:
-    omega=np.degrees(np.arccos(np.dot(n,e)/(nn*ne)))
+  h= np.cross(r,v)
+  nh = np.linalg.norm(h)
+  i= np.degrees(np.arccos(h[2]/nh)) #Inclination
+  N= np.cross(np.array([0,0,1]), h) #Node Line
+  nN = np.linalg.norm(N)
+  #Ascendent Node 
+  if N[1]>=0:
+    Omega = np.degrees(np.arccos(N[0]/nN))
   else:
-    print ("Cuadrant Correction done for: omega")
-    omega=0.0
-  #Anomalia verdadera
-  if np.dot(r,v)>0:
-    teta=np.degrees(np.arccos(np.dot(r,e)/(nr*ne)))
-  else: 
-    print ("Cuadrant Correction done for: theta")
-    teta=0.0
-  #Anomalia excentrica
-  Ex=np.degrees(2*np.arctan(teta/2)/np.sqrt((1+ne)/(1-ne)))
-
-  print "Semimayor Axis (a): ",a
-  print "Eccentricity (ne): ", ne
-  print "Inclination (i): ", i
-  print "Perigee arg (omega): ",omega
-  print "Energy (E): ", E
-  print "Ascendent Node Longitude (Omega): ", Omega
-  print "True Anomaly (teta): ",teta
-  print "Eccentric Anomaly (Ex): ",Ex
-
+    Omega = 360-np.degrees(np.arccos(N[0]/nN))
+  
+  e= (1./mu)*((nv**2-(mu/nr))*r-(nr*radial_v)*v) #Eccentricity
+  ne = np.linalg.norm(e)
+  
+  #Perigee Argument
+  if e[2]>=0:
+    w= np.degrees(np.arccos(np.dot(N/nN,e/ne)))
+  else:
+    w= 360-np.degrees(np.arccos(np.dot(N/nN,e/ne)))
+  
+  #True Anomaly
+  if radial_v>=0:
+    theta=np.degrees(np.arccos(np.dot(e/ne,r/nr)))
+  else:
+    theta=360-np.degrees(np.arccos(np.dot(e/ne,r/nr)))
+  a= nh**2/(mu*(1-ne**2))
+  print "\nSemimayor Axis = %f"%a
+  print "Eccentricity = %f"%ne
+  print "Inclination = %f"%i
+  print "Ascendent Node = %f"%Omega
+  print "Perigee Argument = %f"%w
+  print "True Anomaly = %f"%theta
+  
 else:
-  a= input("Semimayor axis (a) > ")
-  e= input("Eccentricity (e) > ")
-  i = input("inclination (i) > ")
-  O = input("Ascendent Node Longitude (O) > ")
-  p = input("Pergee arg (p) > ")
-  g = input("True Anomaly (g) > ")	
-  m1 = input("Mass (m1) > ")
-  m2 = input("Mass (m2) > ")
-  i=i*np.pi/180.
-  O=O*np.pi/180.
-  p=p*np.pi/180.
-  g=g*np.pi/180.
+  a=8793290.356282
+  e=0.171665
+  i= np.radians(153.249229)
+  O= np.radians(255.279285)
+  p= np.radians(20.136849)
+  g= np.radians(28.377096)
+  #a= input("Semimayor axis (a) > ")
+  #e= input("Eccentricity (e) > ")
+  #i = np.radians(input("inclination (i) > "))
+  #O = np.radians(input("Ascendent Node Longitude (O) > "))
+  #p = np.radians(input("Pergee arg (p) > "))
+  #g = np.radians(input("True Anomaly (g) > "))
+  #m1 = input("Mass (m1) > ")
+  m1=5.97e24
+  #m2 = input("Mass (m2) > ")
   r= a*(1-e**2)/(1+e*np.cos(g))
   x= r*(np.cos(p+g)*np.cos(O)-np.sin(p+g)*np.sin(O)*np.cos(i))
   y= r*(np.cos(p+g)*np.sin(O)+np.sin(p+g)*np.cos(O)*np.cos(i))
@@ -106,9 +92,16 @@ else:
   mu=ctes.gravitational_constant*m1
   n=(mu/a**3)**.5
   #Eccentric Anomaly
+  h=(a*mu*(1-e**2))**.5
   E =np.arccos((a-r)/(a*e))
-  v_x =x*((a**2*n*e*np.sin(E))/r**2) + k*(1+(m2/m1))**.5*((a*(1-e**2)**.5)/r)*(-np.cos(O)*np.sin(p+g)-np.sin(O)*np.cos(i)*np.cos(p+g))
-  v_y= y*((a**2*n*e*np.sin(E))/r**2) + k*(1+(m2/m1))**.5*((a*(1-e**2)**.5)/r)*(-np.sin(O)*np.sin(p+g)+np.cos(O)*np.cos(i)*np.cos(p+g))
-  v_z= z*((a**2*n*e*np.sin(E))/r**2) + k*(1+(m2/m1))**.5*((a*(1-e**2)**.5)/r)*(np.sin(i)*np.cos(p+g))
+  Edot = n/(1-e*np.cos(E))
+  #print e*(mu/h)**.5*np.sin(g)
+  #print a*e*np.sin(E)*Edot
+  #print ((a**2*n*e*np.sin(E)/r)**2+(k*(a*(1-e**2))**.5/r**2)**2)**.5
+  #v_x =x*((a**2*n*e*np.sin(E))/(r**2)) + k*(1+0)**.5*((a*(1-e**2)**.5)/r)*(-np.cos(O)*np.sin(p+g)-np.sin(O)*np.cos(i)*np.cos(p+g))
+  #v_y= y*((a**2*n*e*np.sin(E))/(r**2)) + k*(1+0)**.5*((a*(1-e**2)**.5)/r)*(-np.sin(O)*np.sin(p+g)+np.cos(O)*np.cos(i)*np.cos(p+g))
+  #v_z= z*((a**2*n*e*np.sin(E))/(r**2)) + k*(1+0)**.5*((a*(1-e**2)**.5)/r)*(np.sin(i)*np.cos(p+g))
+  #print (v_x**2+v_y**2+v_z**2)**.5
+  #v_x=(u/h)*(-np.sin(g))*
   print "\n\nPosition [x,y,z] = [%f,%f,%f]"%(x,y,z)
-  print "Velocity [v_x,v_y,v_z] = [%f,%f,%f]"%(v_x,v_y,v_z)
+  #print "Velocity [v_x,v_y,v_z] = [%f,%f,%f]"%(v_x,v_y,v_z)
