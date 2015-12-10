@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+import sys
+if sys.version_info[0] < 3:
+    from Tkinter import *
+else:
+    from tkinter import *
+import tkFileDialog
+from numpy import loadtxt
+def error(string):
+	b= Tk()
+	b.wm_title("Error")
+	Label(b, text=string).grid()
+	b.mainloop()
+
+def file_save(l,m):
+    f = tkFileDialog.asksaveasfile(mode='w', defaultextension=".txt")
+    if f is None: # asksaveasfile return `None` if dialog closed with "cancel".
+        return
+    for x in xrange(len(l)):
+      f.write("\n%f %f"%(l[x], m[x]))
+    f.close() 
+
+def hum(g):
+	cred={}
+	prom={}
+	Label(g, text="Asignatura").grid(row=1, column=0)
+	Label(g, text="Número de Créditos").grid(row=1, column=1)
+	Label(g, text="Definitiva").grid(row=1, column=2)
+	for x in xrange(2, 2+int(eco.get())):
+		Label(g, text="Asignatura %i"%(x-1)).grid(row=x, column=0)
+		cred[str(x)]= Entry(g, justify=CENTER)
+		cred[str(x)].grid(row=x, column=1)
+		prom[str(x)] = Entry(g, justify=CENTER)
+		prom[str(x)].grid(row=x, column=2)
+	Button(g, text="Siguiente", command= lambda: sl(cred, prom, x+2, tok="5")).grid(row=x+1, column=2)
+	Button(bat, text="Cargar archivo", command=lambda:sl(cred,prom,x+2, tok="2")).grid(row=x+1,column=3)
+
+def sl(a, b, c, **kwargs):
+	try:
+		l1.grid_forget()
+	except NameError:
+	  pass
+	if len(a) != int(eco.get()) or len(b) != int(eco.get()):
+		error("Olvidaste escribir algún dato.")
+		raise EnvironmentError("Olvidaste escribir algún dato.")
+	if kwargs["tok"]=="2":
+		root = Tk()
+		eve = tkFileDialog.askopenfile(parent=root,mode='rb',title='Choose a .txt file', filetypes=[('text files', '.txt')])
+		root.destroy()
+		l,m= loadtxt(eve, dtype="float", unpack=True)
+		l,m=list(l), list(m)
+	else:
+		l=[]
+		m=[]
+	for x in xrange(2, 2+int(eco.get())):
+		l.append(float(a[str(x)].get()))
+		m.append(float(b[str(x)].get()))
+	cred, prom=list(l), list(m)
+	m = [x*y for x,y in zip(l,m)]
+	m = sum(m)
+	l= sum(l)
+	l1 = Label(bat, text="Su PAPA es de %f"%(1.*m/l))
+	l1.grid(column=1)
+	Label(bat, text="¿Desea guardar su resultado?").grid(column=1)
+	Button(bat, text="Guardar", command=lambda: file_save(cred,prom)).grid(column=1)
+	
+	bat.mainloop()
+
+bat = Tk()
+bat.wm_title("Calculador de PAPA")
+Label(bat, text="Inserte el número de asignaturas.").grid()
+eco = Entry(bat, justify=CENTER)
+eco.grid(row=0, column=1)
+Button(bat, text="Siguiente", command= lambda: hum(bat)).grid(row=0, column=2)
+bat.mainloop()
