@@ -1,11 +1,19 @@
 print "\nImporting libraries..."
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 import astropy.io.fits as pyfits
 print "Done."
+
+#Steps of spectra
+step=1
 
 #Opening File and Pointing
 print "\nOpening FITS file..."
 s = pyfits.open("IC1683.V500.rscube.fits.gz")
+print "About the File:"
+print "==================="
+s.info()
+print "==================="
 data= s[0].data
 headers = s[0].header
 print "Done."
@@ -38,7 +46,7 @@ print "\nSetting wavelength..."
 wavelength= []
 for x in xrange(int(lambda_begin), int(lambda_begin+lambda_step*len(data)), int(lambda_step)):
     wavelength.append(x)
-wavelength = [wavelength[x] for x in xrange(1,1877,8)]
+wavelength = [wavelength[x] for x in xrange(1,1877,step)]
 print "Done."
 
 def showspectra(event):
@@ -49,18 +57,33 @@ def showspectra(event):
         x,y=int(event.xdata), int(event.ydata)
         ax2.set_xlabel(x_label_spectra)
         ax2.set_ylabel("Flux")
-        ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(1,1877,8)])
+        ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(1,1877,step)])
         print "Drew spectra of pixel (%i, %i)"%(x,y)
         f.canvas.draw()
     except:
         pass
+#Setting Pixels
+print "\nSetting Pixels"
+magnitude_black=[]
+for x in xrange(1,73):
+    for y in xrange(1,78):
+        magnitude_black.append(sum([data[cout][x][y] for cout in xrange(1,1877,step)]))
+max_color=max(magnitude_black)
+min_color=min(magnitude_black)
+magnitude_black=[(x-min_color)/(max_color-min_color) for x in magnitude_black]
+print "Done."
 
 #Graphic the environment
 print "\nSetting environment..."
-f, (ax1, ax2) = plt.subplots(1,2, figsize=(15,10))
-for x in xrange(1,74):
-	for y in xrange(1,79):
-		ax1.scatter(x,y)
+f, (ax1, ax2) = plt.subplots(1,2, figsize=(15,10)) #If you have problems in plotting of the data,
+#remove the figsize arg
+count=0
+for x in xrange(1,73):
+	for y in xrange(1,78):
+            ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1, fill=True, color=str(1-magnitude_black[count])))
+            count+=1
+ax1.set_xlim(0,74)
+ax1.set_ylim(0,79)
 cid = f.canvas.mpl_connect('button_press_event', showspectra)
 print "Done."
 
