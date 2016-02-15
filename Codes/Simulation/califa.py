@@ -1,15 +1,30 @@
 print "\nImporting libraries..."
+import sys
+if sys.version_info[0] < 3:
+    from Tkinter import *
+else:
+    from tkinter import *
+import tkFileDialog
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import astropy.io.fits as pyfits
 print "Done."
 
+def choose():
+    "This Function selects the file to be analyzed"
+    root = Tk()
+    root.update()
+    m = tkFileDialog.askopenfile(parent=root,mode='rb',title='Choose File')
+    root.quit()
+    return m
+
 #Steps of spectra
-step=1
+step=4
 
 #Opening File and Pointing
 print "\nOpening FITS file..."
-s = pyfits.open("IC1683.V500.rscube.fits.gz")
+#s = pyfits.open("IC1683.V500.rscube.fits.gz")
+s= pyfits.open(choose().name)
 print "About the File:"
 print "==================="
 s.info()
@@ -62,6 +77,7 @@ def showspectra(event):
         f.canvas.draw()
     except:
         pass
+
 #Setting Pixels
 print "\nSetting Pixels"
 magnitude_black=[]
