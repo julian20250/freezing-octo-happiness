@@ -8,7 +8,6 @@ import tkFileDialog
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import astropy.io.fits as pyfits
-import numpy as np
 print "Done."
 
 def choose():
@@ -59,15 +58,28 @@ for x in header_list:
         dec_ref=header_result[count]
     if "CD2_2" in x:
         dec_step=header_result[count]
+    if "V500 PPAK P3 RA" in x:
+        ra_value=header_result[count]
+    if "CD1_1" in x :
+        ra_step=header_result[count]
     count+=1
-#print dec_value, dec_ref, dec_step
-#declination=np.linspace(dec_value-dec_step*dec_ref,dec_value-dec_step*dec_ref+len(data[0][0])*dec_step, len(data[0][0])-1)
+
 declination=[]
+RA=[]
 count=dec_value-dec_step*dec_ref
+
 for x in xrange(1, len(data[0][0])):
     declination.append(count)
     count+=dec_step
+
+count=ra_value-ra_step*dec_ref
+for x in xrange(1, len(data[0])):
+    RA.append(count)
+    count+=ra_step
+
 declination= [str(int(x))+"deg"+str(int((x-int(x))*60.))+"'"+str(int(((x-int(x))*60.-int((x-int(x))*60.))*60.))+"''" for x in declination]
+
+RA=[str(int(x*24/360.))+"h"+str(int((x*24/360.-int(x*24/360.))*60))+"m"+"%1.2f"%(((x*24/360.-int(x*24/360.))*60-int((x*24/360.-int(x*24/360.))*60))*60)+"s" for x in RA]
 print "Done."
 
 #print x_label_spectra, lambda_begin, lambda_step, lambda_pix
@@ -116,8 +128,15 @@ for x in xrange(1,len(data[0])):
 ax1.set_xlim(0,len(data[0]))
 ax1.set_ylim(0,len(data[0][0]))
 ax1.set_yticks(xrange(1,len(data[0][0]), 6))
-ax1.set_yticklabels(declination)
+ax1.set_yticklabels([declination[x] for x in xrange(0,len(declination),6)])
+
+ax1.set_xticks(xrange(1, len(data[0]), 4))
+ax1.set_xticklabels([RA[x] for x in xrange(0,len(RA),4)], rotation=90)
+
 ax1.set_xlabel("Declination")
+ax1.set_xlabel("RA")
+
+ax1.tick_params(labelsize=10)
 cid = f.canvas.mpl_connect('button_press_event', showspectra)
 print "Done."
 
