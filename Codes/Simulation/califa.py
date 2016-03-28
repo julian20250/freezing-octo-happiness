@@ -63,7 +63,8 @@ for x in header_list:
     if "CD1_1" in x :
         ra_step=header_result[count]
     count+=1
-
+#print header_list[count]
+#print headers["V500 PPAK P2 RA"]
 declination=[]
 RA=[]
 count=dec_value-dec_step*dec_ref
@@ -114,6 +115,9 @@ for x in xrange(1,len(data[0])):
 max_color=max(magnitude_black)
 min_color=min(magnitude_black)
 magnitude_black=[(x-min_color)/(max_color-min_color) for x in magnitude_black]
+#New Part
+percent=.1
+magnitude_black=[(1-percent)*x+percent for x in magnitude_black]
 print "Done."
 
 #Graphic the environment
@@ -123,7 +127,7 @@ f, (ax1, ax2) = plt.subplots(1,2, figsize=(15,10)) #If you have problems in plot
 count=0
 for x in xrange(1,len(data[0])):
     for y in xrange(1,len(data[0][0])):
-        ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1, facecolor="green",linewidth=0.5,fill=True, alpha=magnitude_black[count], edgecolor="black"))
+        ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1, facecolor="green",linewidth=0,fill=True, alpha=magnitude_black[count], edgecolor="black"))
         count+=1
 ax1.set_xlim(0,len(data[0]))
 ax1.set_ylim(0,len(data[0][0]))
@@ -133,10 +137,13 @@ ax1.set_yticklabels([declination[x] for x in xrange(0,len(declination),6)])
 ax1.set_xticks(xrange(1, len(data[0]), 4))
 ax1.set_xticklabels([RA[x] for x in xrange(0,len(RA),4)], rotation=90)
 
-ax1.set_xlabel("Declination")
+ax1.set_ylabel("Declination")
 ax1.set_xlabel("RA")
+plt.suptitle(headers["OBJECT"])
 
-ax1.tick_params(labelsize=10)
+ax1.tick_params(labelsize=8)
+ax1.format_coord = lambda x,y : "Pixel: (%0g, %0g)"%(x, y)
+ax2.format_coord = lambda x,y : "Wavelength=%0g, Flux=%0g"%(x, y)
 cid = f.canvas.mpl_connect('button_press_event', showspectra)
 print "Done."
 
