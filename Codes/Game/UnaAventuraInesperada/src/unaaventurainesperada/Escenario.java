@@ -11,7 +11,9 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
+import java.util.Timer;
 import javax.swing.JFrame;
+
 
 /**
  *
@@ -43,6 +45,7 @@ public class Escenario extends Canvas {
     private final CasaRicardo casaRicardo;
     private final EdificioGris[] edificios; 
 
+
     public Escenario(int x, int y, int width, int height, JFrame marco) {
         setBounds(x, y, width, height);
         this.x = x;
@@ -63,7 +66,9 @@ public class Escenario extends Canvas {
         edificioAzul = new EdificioAzul(180,100,20,20);
         edificioVerde = new EdificioVerde(80,0,20,20);
         edificioRojo = new EdificioRojo(140,20,20,20);
-        tiempoRestante= new TiempoRestante(260,80,20,20);
+        tiempoRestante= new TiempoRestante(250,80,20,20,this);
+        Timer timer= new Timer();
+        timer.scheduleAtFixedRate(tiempoRestante, 10, 1000);
         puntaje = new Puntaje(260, 60, 20, 20);
         foras= new Foras(20,0,20,20);
         casaRicardo= new CasaRicardo(260,0,20,20);

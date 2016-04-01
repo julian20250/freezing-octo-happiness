@@ -7,12 +7,13 @@ package unaaventurainesperada;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.TimerTask;
 
 /**
  *
  * @author julian
  */
-public class TiempoRestante {
+public class TiempoRestante extends TimerTask{
     private final double totalWidth = 290d;
     private final double totalHeight= 100d;
 
@@ -22,17 +23,44 @@ public class TiempoRestante {
     
     //Escalas
     private double escalaX, escalaY;
-
-    public TiempoRestante(double x, double y, double width, double height) {
+    
+    private short minutos=4;
+    private short segundos=59;
+    private short paso=1;
+    private final Escenario escenario;
+    public TiempoRestante(double x, double y, double width, double height, Escenario escenario) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.escalaX = width / totalWidth;
         this.escalaY = height / totalHeight;
+        this.escenario = escenario;
     } 
     
-
+    public void decrementar() {
+        if (minutos > 0){
+            segundos-=paso;
+            if(segundos < 0){
+                minutos--;
+                segundos=59;
+            }
+        }
+        else{
+            minutos=0;
+            segundos=0;
+        }
+    }
+    
+    @Override
+    public String toString(){
+        String cadena= "";
+        cadena += (minutos >= 0 && minutos <= 9) ? "0" : "";
+        cadena += minutos + ":";
+        cadena += (segundos >= 0 && segundos <= 9) ? "0" : "";
+        cadena+= segundos;
+        return cadena;
+    }
     public double getX() {
         return x;
     }
@@ -65,10 +93,19 @@ public class TiempoRestante {
         
         //Contorno Anillo
         graphics2D.setFont(new Font("sans", Font.BOLD, 40 ));
-        graphics2D.drawString("Tiempo", 0,60);
+        graphics2D.drawString("Tiempo: "+toString(), 0,30);
+        
+        
+        
         
         //Volver a la traslacion y escalacion anterior
         graphics2D.setTransform(affineTransform);
+    }
+
+    @Override
+    public void run() {
+        decrementar();
+        escenario.repaint();
     }
     
 }
