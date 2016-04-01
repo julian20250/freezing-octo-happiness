@@ -135,10 +135,10 @@ count=0
 
 for x in xrange(1,len(data[0])):
     for y in xrange(1,len(data[0][0])):
-        ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1,fill=True, edgecolor="black", color=color_data[count]))
+        ax1.add_patch(patches.Rectangle((y-.5,x-.5),1,1,fill=True, edgecolor="black", color=color_data[count]))
         count+=1
-ax1.set_xlim(0,len(data[0]))
-ax1.set_ylim(0,len(data[0][0]))
+ax1.set_xlim(0,len(data[0][0]))
+ax1.set_ylim(0,len(data[0]))
 ax1.set_yticks(xrange(1,len(data[0][0]), 6))
 ax1.set_yticklabels([declination[x] for x in xrange(0,len(declination),6)])
 
