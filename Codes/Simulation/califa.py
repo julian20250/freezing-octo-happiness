@@ -5,9 +5,12 @@ if sys.version_info[0] < 3:
 else:
     from tkinter import *
 import tkFileDialog
+import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import astropy.io.fits as pyfits
+import matplotlib.cm as cm
+import matplotlib.colorbar as cbar
 print "Done."
 
 def choose():
@@ -116,8 +119,12 @@ max_color=max(magnitude_black)
 min_color=min(magnitude_black)
 magnitude_black=[(x-min_color)/(max_color-min_color) for x in magnitude_black]
 #New Part
-percent=.1
+percent=0
 magnitude_black=[(1-percent)*x+percent for x in magnitude_black]
+
+#Another new Part
+my_cmap= cm.get_cmap("spectral") #Here to Change Colorbar
+color_data= my_cmap(np.array(magnitude_black))
 print "Done."
 
 #Graphic the environment
@@ -125,14 +132,19 @@ print "\nSetting environment..."
 f, (ax1, ax2) = plt.subplots(1,2, figsize=(15,10)) #If you have problems in plotting of the data,
 #remove the figsize arg
 count=0
+
 for x in xrange(1,len(data[0])):
     for y in xrange(1,len(data[0][0])):
-        ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1, facecolor="green",linewidth=0,fill=True, alpha=magnitude_black[count], edgecolor="black"))
+        ax1.add_patch(patches.Rectangle((x-.5,y-.5),1,1,fill=True, edgecolor="black", color=color_data[count]))
         count+=1
 ax1.set_xlim(0,len(data[0]))
 ax1.set_ylim(0,len(data[0][0]))
 ax1.set_yticks(xrange(1,len(data[0][0]), 6))
 ax1.set_yticklabels([declination[x] for x in xrange(0,len(declination),6)])
+
+normal = plt.Normalize(min(magnitude_black), max(magnitude_black))
+cax, _ = cbar.make_axes(ax1)
+cb2 = cbar.ColorbarBase(cax, cmap=my_cmap,norm=normal)
 
 ax1.set_xticks(xrange(1, len(data[0]), 4))
 ax1.set_xticklabels([RA[x] for x in xrange(0,len(RA),4)], rotation=90)
