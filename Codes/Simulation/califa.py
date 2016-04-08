@@ -18,8 +18,50 @@ def choose():
     root = Tk()
     root.update()
     m = tkFileDialog.askopenfile(parent=root,mode='rb',title='Choose File')
-    root.quit()
+    root.destroy()
     return m
+
+def emergent_window():
+    root=Tk()
+    root.wm_title("Wavelength Interval")
+    Label(root,text="Insert the interval").grid(row=0, column=0)
+    var = IntVar()
+    c= Checkbutton(root, text="Allow Interval", variable=var, onvalue=1, offvalue=0)
+    c.grid(row=1, column=0)
+    Label(root,text="Interval").grid(row=2,column=0)
+    begin= Entry(root)
+    end= Entry(root)
+    begin.grid(row=2, column=1)
+    end.grid(row=2, column=2)
+    j=[]
+    Button(root, text="Continue", command=lambda: obtain_entry(root,begin,end,j)).grid(row=3,column=2)
+    root.mainloop()
+    if var.get()==1:
+	return j
+    else:
+	return None
+
+def obtain_entry(root, a, b, j):
+    try:
+      j.append(float(a.get()))
+      j.append(float(b.get()))
+    except:
+      pass
+    root.destroy()
+    
+def showspectra(event):
+    "This function draws the spectra for each pixel and actualizes the frame"
+    try:
+        ax2.clear()
+        f.canvas.draw()
+        x,y=int(event.xdata), int(event.ydata)
+        ax2.set_xlabel(x_label_spectra)
+        ax2.set_ylabel("Flux")
+        ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(1,len(data),step)])
+        print "Drew spectra of pixel (%i, %i)"%(x,y)
+        f.canvas.draw()
+    except:
+        pass
 
 #Steps of spectra
 step=4
@@ -95,25 +137,14 @@ for x in xrange(int(lambda_begin), int(lambda_begin+lambda_step*len(data)), int(
 wavelength = [wavelength[x] for x in xrange(1,len(data),step)]
 print "Done."
 
-def showspectra(event):
-    "This function draws the spectra for each pixel and actualizes the frame"
-    try:
-        ax2.clear()
-        f.canvas.draw()
-        x,y=int(event.xdata), int(event.ydata)
-        ax2.set_xlabel(x_label_spectra)
-        ax2.set_ylabel("Flux")
-        ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(1,len(data),step)])
-        print "Drew spectra of pixel (%i, %i)"%(x,y)
-        f.canvas.draw()
-    except:
-        pass
+#Emergent Window
+print emergent_window()
 
 #Setting Pixels
 print "\nSetting Pixels"
 magnitude_black=[]
-for x in xrange(1,len(data[0])):
-    for y in xrange(1,len(data[0][0])):
+for x in xrange(len(data[0])):
+    for y in xrange(len(data[0][0])):
         magnitude_black.append(sum([data[cout][x][y] for cout in xrange(1,len(data),step)]))
 max_color=max(magnitude_black)
 min_color=min(magnitude_black)
@@ -133,20 +164,20 @@ f, (ax1, ax2) = plt.subplots(1,2, figsize=(15,10)) #If you have problems in plot
 #remove the figsize arg
 count=0
 
-for x in xrange(1,len(data[0])):
-    for y in xrange(1,len(data[0][0])):
+for x in xrange(len(data[0])):
+    for y in xrange(len(data[0][0])):
         ax1.add_patch(patches.Rectangle((y-.5,x-.5),1,1,fill=True, edgecolor="black", color=color_data[count]))
         count+=1
-ax1.set_xlim(0,len(data[0][0]))
-ax1.set_ylim(0,len(data[0]))
-ax1.set_yticks(xrange(1,len(data[0][0]), 6))
+ax1.set_xlim(0,len(data[0][0])-1)
+ax1.set_ylim(0,len(data[0])-10)
+ax1.set_yticks(xrange(0,len(data[0][0])-10, 6))
 ax1.set_yticklabels([declination[x] for x in xrange(0,len(declination),6)])
 
 normal = plt.Normalize(min(magnitude_black), max(magnitude_black))
 cax, _ = cbar.make_axes(ax1)
 cb2 = cbar.ColorbarBase(cax, cmap=my_cmap,norm=normal)
 
-ax1.set_xticks(xrange(1, len(data[0]), 4))
+ax1.set_xticks(xrange(0, len(data[0])-1, 4))
 ax1.set_xticklabels([RA[x] for x in xrange(0,len(RA),4)], rotation=90)
 
 ax1.set_ylabel("Declination")
