@@ -16,51 +16,14 @@ import java.awt.geom.Rectangle2D;
  *
  * @author usuario
  */
-public class LlaveRoja {
-    private final double totalWidth = 150d;
-    private final double totalHeight= 270d;
+public class LlaveRoja extends ObjetoGrafico {
 
-    //Posicion, ancho y alto en el escenario
-    private double x,y;
-    private double width, height;
-    
-    //Escalas
-    private double escalaX, escalaY;
 
     public LlaveRoja(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.escalaX = width / totalWidth;
-        this.escalaY = height / totalHeight;
+        super(x,y,width,height,150,270);
     } 
     
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getEscalaX() {
-        return escalaX;
-    }
-
-    public double getEscalaY() {
-        return escalaY;
-    }
-    
+    @Override
     public void paint(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();

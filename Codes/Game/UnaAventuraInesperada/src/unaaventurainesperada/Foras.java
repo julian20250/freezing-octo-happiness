@@ -16,53 +16,12 @@ import java.awt.geom.Rectangle2D;
  *
  * @author usuario
  */
-public class Foras {
-    //Ancho y Alto total de la figura
-    private final double totalWidth = 145d; //private no se deja ver
-    private final double totalHeight= 280d; //final, la variable no se podra
-    //cambiar
-    
-    //Posicion, ancho y alto en el escenario
-    private double x,y;
-    private double width, height;
-    
-    //Escalas
-    private double escalaX, escalaY;
-
+public class Foras extends ObjetoGrafico {
     public Foras(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.escalaX = width / totalWidth;
-        this.escalaY = height / totalHeight;
+        super(x,y,width,height,145,280);
     } 
     
-
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getEscalaX() {
-        return escalaX;
-    }
-
-    public double getEscalaY() {
-        return escalaY;
-    }
-    
+    @Override
     public void paint(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();

@@ -19,22 +19,18 @@ import java.awt.geom.Rectangle2D;
  *
  * @author usuario
  */
-public class Ricardo implements KeyListener{
+public class Ricardo extends ObjetoGrafico implements KeyListener{
     //Pasos de mi protagonista
     private final int pasoX = 20; //Tamaño del paso del protagonista en X
     private final int pasoY=20; //Tamaño del paso del protagonista en Y
     
     //Ancho y Alto total de la figura
-    private final double totalWidth = 110d; //private no se deja ver
-    private final double totalHeight= 290d; //final, la variable no se podra
+    //private final double totalWidth = 110d; //private no se deja ver
+    //private final double totalHeight= 290d; //final, la variable no se podra
     //cambiar
     
     //Posicion, ancho y alto en el escenario
-    private double x,y;
-    private double width, height;
     
-    //Escalas
-    private double escalaX, escalaY;
     
     //Movimiento
     private TipoDireccion direccion = TipoDireccion.parado;
@@ -68,40 +64,13 @@ public class Ricardo implements KeyListener{
     
     
     public Ricardo(double x, double y, double width, double height, Escenario escenario) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.escalaX = width / totalWidth;
-        this.escalaY = height / totalHeight;
+        super(x,y,width,height,110d,290d);
         this.escenario = escenario;
     } 
     
 
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getEscalaX() {
-        return escalaX;
-    }
-
-    public double getEscalaY() {
-        return escalaY;
-    }
     
+    @Override
     public void paint(Graphics2D graphics2D){
         
         //Transladar y escalar
