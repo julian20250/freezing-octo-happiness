@@ -72,8 +72,9 @@ public class Escenario extends Canvas {
         puntaje = new Puntaje(260, 60, 20, 20);
         foras= new Foras(20,0,20,20);
         casaRicardo= new CasaRicardo(260,0,20,20);
-        eva= new Eva(40,0,20,20);
-        
+        eva= new Eva(120,0,20,20,this);
+        Thread threadEva=new Thread(eva);
+        threadEva.start();
         edificios = new EdificioGris[60];
         double beginX=140.0;
         double beginY=0;
@@ -151,6 +152,7 @@ public class Escenario extends Canvas {
         //llaveActual.paint(graphics2D);
         
         ricardo.paint(graphics2D);
+        eva.paint(graphics2D);
         llaveAzul.paint(graphics2D);
         llaveRoja.paint(graphics2D);
         llaveActual.paint(graphics2D);

@@ -16,26 +16,48 @@ import java.awt.geom.Rectangle2D;
  *
  * @author usuario
  */
-public class Eva extends ObjetoGrafico {
+public class Eva extends ObjetoGrafico implements Runnable {
     //Ancho y Alto total de la figura
     
     //cambiar
     
     //Posicion, ancho y alto en el escenario
     
+    private TipoDireccion direccion = TipoDireccion.abajo;
+    private final double longitudPaso = 20;
+    private int op=1;
+    private final Escenario escenario;
+    public TipoDireccion getDireccion() {
+        return direccion;
+    }
+    
+    public void darPaso(){
+        switch(direccion){
+            case derecha:
+                x+=longitudPaso;
+                break;
+            case izquierda:
+                x-=longitudPaso;
+                break;
+            case arriba:
+                y-=longitudPaso;
+                break;
+            case abajo:
+                y+=longitudPaso;
+                break;
+        }
+    }
 
-    public Eva(double x, double y, double width, double height) {
+    public void setDireccion(TipoDireccion direccion) {
+        this.direccion = direccion;
+    }
+    
+    public Eva(double x, double y, double width, double height, Escenario escenario) {
         super(x,y,width,height,135,280);
+        this.escenario=escenario;
     } 
     
-
-    @Override
-    public void paint(Graphics2D graphics2D){
-        //Transladar y escalar
-        AffineTransform affineTransform = graphics2D.getTransform();
-        graphics2D.translate(getX(), getY());
-        graphics2D.scale(getEscalaX(), getEscalaY());
-        
+    private void dibujar(Graphics2D graphics2D){
         //Cabeza
         graphics2D.setColor(new Color(255,180,180));
         graphics2D.fill(new Ellipse2D.Double(24d, 0d, 80d, 80d));
@@ -94,9 +116,122 @@ public class Eva extends ObjetoGrafico {
         graphics2D.setColor(new Color(255,100,180));
         graphics2D.fill(new Ellipse2D.Double(50d, 265d, 25d, 15d));
         graphics2D.fill(new Ellipse2D.Double(75d, 265d, 25d, 15d));
+    }
+    
+
+    
+    private void dibujarDerecha(Graphics2D graphics2D){
+        //Transladar y escalar
+        AffineTransform affineTransform = graphics2D.getTransform();
+        graphics2D.translate(getX(), getY());
+        graphics2D.scale(getEscalaX(), getEscalaY());
+        
+        dibujar(graphics2D);
          //Volver a la traslacion y escalacion anterior
         graphics2D.setTransform(affineTransform);
 
     }
+    private void dibujarIzquierda(Graphics2D graphics2D){
+        //Transladar y escalar
+        AffineTransform affineTransform = graphics2D.getTransform();
+        graphics2D.translate(getX(), getY());
+        graphics2D.scale(getEscalaX(), getEscalaY());
+        //graphics2D.translate(-getTotalWidth(), 0d);
+        
+        dibujar(graphics2D);
+         //Volver a la traslacion y escalacion anterior
+        graphics2D.setTransform(affineTransform);
+
+    }
+    private void dibujarArriba(Graphics2D graphics2D){
+        //Transladar y escalar
+        AffineTransform affineTransform = graphics2D.getTransform();
+        graphics2D.translate(getX(), getY());
+        graphics2D.scale(getEscalaX(), getEscalaY());
+        //graphics2D.translate(0d, -getTotalHeight());
+        
+        dibujar(graphics2D);
+         //Volver a la traslacion y escalacion anterior
+        graphics2D.setTransform(affineTransform);
+
+    }
+    private void dibujarAbajo(Graphics2D graphics2D){
+        //Transladar y escalar
+        AffineTransform affineTransform = graphics2D.getTransform();
+        graphics2D.translate(getX(), getY());
+        graphics2D.scale(getEscalaX(), getEscalaY());
+        //graphics2D.translate(0d, getTotalHeight());
+        
+        dibujar(graphics2D);
+         //Volver a la traslacion y escalacion anterior
+        graphics2D.setTransform(affineTransform);
+
+    }
+
+    @Override
+    public void paint(Graphics2D graphics2D) {
+        switch (direccion){
+            case derecha:
+                dibujarDerecha(graphics2D);
+                break;
+            case izquierda:
+                dibujarIzquierda(graphics2D);
+                break;
+            case arriba:
+                dibujarArriba(graphics2D);
+                break;
+            case abajo:
+                dibujarAbajo(graphics2D);
+                break;
+        }              
+    }
+    public void voltear(){
+        switch (op){
+            case 1:
+                direccion=TipoDireccion.abajo;
+                break;
+            case 2:
+                direccion=TipoDireccion.arriba;
+                break;
+            case 3:
+                direccion=TipoDireccion.izquierda;
+                break;
+            case 4:
+                direccion=TipoDireccion.derecha;
+                break;
+        }
+    }
+
+    @Override
+    public void run() {
+        for (;;){
+            darPaso();
+            if (x==120 && y==80 && direccion==TipoDireccion.abajo){
+                op=4;
+                voltear();
+            }
+            else if (x==160 && y==80 && direccion==TipoDireccion.derecha){
+                op=1;
+                voltear();
+            }
+            else if (x==160 && y==120 && direccion==TipoDireccion.abajo){
+                op=3;
+                voltear();
+            }
+            else if (x==100 && y==120 && direccion==TipoDireccion.izquierda){
+                op=2;
+                voltear();
+            }
+            else if (x==100 && y==80 && direccion==TipoDireccion.arriba){
+                op=4;
+                voltear();
+            }
+            try{
+                Thread.sleep(1000);               
+            } catch(InterruptedException ex) { }
+        }
+    }
+    
+    
     
 }
