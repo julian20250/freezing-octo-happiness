@@ -13,6 +13,12 @@ import matplotlib.cm as cm
 import matplotlib.colorbar as cbar
 print "Done."
 
+def abs(x):
+    if x>=0:
+        return x
+    else:
+        return -1*x
+
 def choose():
     "This Function selects the file to be analyzed"
     root = Tk()
@@ -37,9 +43,9 @@ def emergent_window():
     Button(root, text="Continue", command=lambda: obtain_entry(root,begin,end,j)).grid(row=3,column=2)
     root.mainloop()
     if var.get()==1:
-	return j
+        return j
     else:
-	return None
+        return None
 
 def obtain_entry(root, a, b, j):
     try:
@@ -57,7 +63,10 @@ def showspectra(event):
         x,y=int(event.xdata), int(event.ydata)
         ax2.set_xlabel(x_label_spectra)
         ax2.set_ylabel("Flux")
-        ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(1,len(data),step)])
+        if token==0:
+            ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(0,len(data),step)])
+        else:
+            ax2.plot(wavelength, [data[cout][x][y] for cout in xrange(begin_wl,end_wl,step)])
         print "Drew spectra of pixel (%i, %i)"%(x,y)
         f.canvas.draw()
     except:
@@ -134,18 +143,41 @@ print "\nSetting wavelength..."
 wavelength= []
 for x in xrange(int(lambda_begin), int(lambda_begin+lambda_step*len(data)), int(lambda_step)):
     wavelength.append(x)
-wavelength = [wavelength[x] for x in xrange(1,len(data),step)]
+#Emergent Window
+ran=emergent_window()
+token=0
+if ran != None:
+    compare_begin=[abs(x-ran[0]) for x in wavelength]
+    compare_end=[abs(x-ran[1]) for x in wavelength]
+    begin_wl=compare_begin.index(min(compare_begin))
+    end_wl=compare_end.index(min(compare_end))
+    print begin_wl,end_wl
+    wavelength=[wavelength[x] for x in xrange(begin_wl,end_wl,step)]
+    print wavelength
+    ka=len(data[0])
+    token=1
+    ke=len(data[0][0])
+    print ka,ke
+    ob=data
+    for x in xrange(len(data[0])):
+        for y in xrange(len(data[0][0])):
+            for z in xrange(0,len(data),step):
+                if begin_wl<=z<=end_wl:
+                    pass
+                else:
+                    data[z][x][y]=0
+else:
+    wavelength = [wavelength[x] for x in xrange(0,len(data),step)]
+    pass
 print "Done."
 
-#Emergent Window
-print emergent_window()
 
 #Setting Pixels
 print "\nSetting Pixels"
 magnitude_black=[]
 for x in xrange(len(data[0])):
     for y in xrange(len(data[0][0])):
-        magnitude_black.append(sum([data[cout][x][y] for cout in xrange(1,len(data),step)]))
+        magnitude_black.append(sum([data[cout][x][y] for cout in xrange(0,len(data),step)]))
 max_color=max(magnitude_black)
 min_color=min(magnitude_black)
 magnitude_black=[(x-min_color)/(max_color-min_color) for x in magnitude_black]
@@ -154,7 +186,7 @@ percent=0
 magnitude_black=[(1-percent)*x+percent for x in magnitude_black]
 
 #Another new Part
-my_cmap= cm.get_cmap("spectral") #Here to Change Colorbar
+my_cmap= cm.get_cmap("gray") #Here to Change Colorbar
 color_data= my_cmap(np.array(magnitude_black))
 print "Done."
 
