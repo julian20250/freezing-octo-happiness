@@ -1,4 +1,3 @@
 freezing-octo-happiness
 =======================
-
-Enjoy!
+##License##
