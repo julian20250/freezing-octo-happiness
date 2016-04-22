@@ -186,7 +186,7 @@ percent=0
 magnitude_black=[(1-percent)*x+percent for x in magnitude_black]
 
 #Another new Part
-my_cmap= cm.get_cmap("gray") #Here to Change Colorbar
+my_cmap= cm.get_cmap("spectral") #Here to Change Colorbar
 color_data= my_cmap(np.array(magnitude_black))
 print "Done."
 
