@@ -14,16 +14,25 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 /**
  *
  * @author usuario
  */
-public class Ricardo extends ObjetoGrafico implements KeyListener{
+public class Ricardo extends ObjetoMovil implements KeyListener{
     //Pasos de mi protagonista
     private final int pasoX = 20; //Tamaño del paso del protagonista en X
     private final int pasoY=20; //Tamaño del paso del protagonista en Y
+    private final LlaveVerde v_contador;
+    private final LlaveAzul b_contador;
+    private final LlaveRoja r_contador;
+    private final LlaveAmarilla a_contador;
     
+    private boolean tok1=false;
+    private boolean tok2=false;
+    private boolean tok3=false;
+    private boolean tok4=false;
     //Ancho y Alto total de la figura
     //private final double totalWidth = 110d; //private no se deja ver
     //private final double totalHeight= 290d; //final, la variable no se podra
@@ -33,39 +42,17 @@ public class Ricardo extends ObjetoGrafico implements KeyListener{
     
     
     //Movimiento
-    private TipoDireccion direccion = TipoDireccion.parado;
-    private final double longitudPaso = 20;
-    private final Escenario escenario;
+    private final Escenario escenario; 
+   
     
-    public TipoDireccion getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(TipoDireccion direccion) {
-        this.direccion = direccion;
-    }
-    
-    public void darPaso(){
-        switch(direccion){
-            case derecha:
-                x+= longitudPaso;
-                break;
-            case izquierda:
-                x-=longitudPaso;
-                break;
-            case arriba:
-                y-=longitudPaso;
-                break;
-            case abajo:
-                y+=longitudPaso;
-                break;
-        }
-    }
-    
-    
-    public Ricardo(double x, double y, double width, double height, Escenario escenario) {
-        super(x,y,width,height,110d,290d);
+    public Ricardo(double x, double y, double width, double height, Escenario escenario, LlaveVerde v_contador,
+            LlaveAzul b_contador, LlaveRoja r_contador, LlaveAmarilla a_contador) {
+        super(x,y,width,height,110d,290d, TipoDireccion.parado, 20);
         this.escenario = escenario;
+        this.v_contador=v_contador;
+        this.a_contador=a_contador;
+        this.b_contador=b_contador;
+        this.r_contador=r_contador;
     } 
     
 
@@ -180,6 +167,10 @@ public class Ricardo extends ObjetoGrafico implements KeyListener{
     @Override
     public void keyPressed(KeyEvent e) {
         int tecla= e.getKeyCode();
+        LlaveAmarilla llaveAmarilla = null;
+        LlaveAzul llaveAzul = null;
+        LlaveRoja llaveRoja = null;
+        LlaveVerde llaveVerde=null;
         
         switch(tecla){
             case KeyEvent.VK_RIGHT:
@@ -200,12 +191,121 @@ public class Ricardo extends ObjetoGrafico implements KeyListener{
         }
         
         darPaso();
+        ArrayList<ObjetoGrafico> quienes= escenario.conQuienesColisiona(this);
+        for (ObjetoGrafico o: quienes){
+            if (o instanceof EdificioGris){
+                devolver(o);
+            }else if (o instanceof LlaveAmarilla){
+                llaveAmarilla= (LlaveAmarilla) o;                
+            }else if (o instanceof LlaveAzul){
+                llaveAzul= (LlaveAzul) o;
+            }else if (o instanceof LlaveRoja){
+                llaveRoja= (LlaveRoja) o;
+            }
+            else if (o instanceof LlaveVerde){
+                llaveVerde= (LlaveVerde) o;
+            }else if (o instanceof EdificioVerde){
+                if (!tok1){
+                    devolver(o);
+                }
+            }else if (o instanceof EdificioAzul){
+                if (!tok2){
+                    devolver(o);
+                }
+            } else if (o instanceof EdificioAmarillo){
+                if (!tok3){
+                    devolver(o);
+                }
+            } else if (o instanceof EdificioRojo){
+                if (!tok4){
+                    devolver(o);
+                }
+            }              
+        }
+        if (llaveAmarilla !=null){
+            llaveAmarilla.setColisionable(false);
+            llaveAmarilla.setVisible(false);
+            b_contador.setVisible(false);
+            a_contador.setVisible(true);
+            tok3= true;
+
+        }
+        if (llaveAzul !=null){
+            llaveAzul.setColisionable(false);
+            llaveAzul.setVisible(false);
+            v_contador.setVisible(false);
+            b_contador.setVisible(true);
+            tok2=true;
+
+        }
+        if (llaveVerde !=null){
+            llaveVerde.setColisionable(false);
+            llaveVerde.setVisible(false);
+            v_contador.setVisible(true);
+            tok1=true;
+            
+
+        }
+        if (llaveRoja !=null){
+            llaveRoja.setColisionable(false);
+            llaveRoja.setVisible(false);
+            a_contador.setVisible(false);
+            r_contador.setVisible(true);
+            tok4= true;
+
+        }
         escenario.repaint();
     }
-
+    public void darPaso(){
+        switch(direccion){
+            case derecha:
+                x+= longitudPaso;
+                break;
+            case izquierda:
+                x-=longitudPaso;
+                break;
+            case arriba:
+                y-=longitudPaso;
+                break;
+            case abajo:
+                y+=longitudPaso;
+                break;
+        }
+    }
     @Override
     public void keyReleased(KeyEvent e) {
         
+    }
+
+    @Override
+    public void dibujarDerecha(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarIzquierda(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarArriba(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarAbajo(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarParado(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+    @Override
+    public void run() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

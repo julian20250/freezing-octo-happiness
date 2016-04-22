@@ -16,44 +16,20 @@ import java.awt.geom.Rectangle2D;
  *
  * @author usuario
  */
-public class Eva extends ObjetoGrafico implements Runnable {
+public class Eva extends ObjetoMovil implements Runnable {
     //Ancho y Alto total de la figura
     
     //cambiar
     
     //Posicion, ancho y alto en el escenario
     
-    private TipoDireccion direccion = TipoDireccion.abajo;
-    private final double longitudPaso = 20;
     private int op=1;
     private final Escenario escenario;
-    public TipoDireccion getDireccion() {
-        return direccion;
-    }
-    
-    public void darPaso(){
-        switch(direccion){
-            case derecha:
-                x+=longitudPaso;
-                break;
-            case izquierda:
-                x-=longitudPaso;
-                break;
-            case arriba:
-                y-=longitudPaso;
-                break;
-            case abajo:
-                y+=longitudPaso;
-                break;
-        }
-    }
+    private TipoDireccion direccion= TipoDireccion.abajo;
 
-    public void setDireccion(TipoDireccion direccion) {
-        this.direccion = direccion;
-    }
     
     public Eva(double x, double y, double width, double height, Escenario escenario) {
-        super(x,y,width,height,135,280);
+        super(x,y,width,height,135,280, TipoDireccion.abajo,20);
         this.escenario=escenario;
     } 
     
@@ -119,8 +95,8 @@ public class Eva extends ObjetoGrafico implements Runnable {
     }
     
 
-    
-    private void dibujarDerecha(Graphics2D graphics2D){
+    @Override
+    public void dibujarDerecha(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();
         graphics2D.translate(getX(), getY());
@@ -131,7 +107,8 @@ public class Eva extends ObjetoGrafico implements Runnable {
         graphics2D.setTransform(affineTransform);
 
     }
-    private void dibujarIzquierda(Graphics2D graphics2D){
+    @Override
+    public void dibujarIzquierda(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();
         graphics2D.translate(getX(), getY());
@@ -143,7 +120,8 @@ public class Eva extends ObjetoGrafico implements Runnable {
         graphics2D.setTransform(affineTransform);
 
     }
-    private void dibujarArriba(Graphics2D graphics2D){
+    @Override
+    public void dibujarArriba(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();
         graphics2D.translate(getX(), getY());
@@ -155,7 +133,8 @@ public class Eva extends ObjetoGrafico implements Runnable {
         graphics2D.setTransform(affineTransform);
 
     }
-    private void dibujarAbajo(Graphics2D graphics2D){
+    @Override
+    public void dibujarAbajo(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();
         graphics2D.translate(getX(), getY());
@@ -166,24 +145,6 @@ public class Eva extends ObjetoGrafico implements Runnable {
          //Volver a la traslacion y escalacion anterior
         graphics2D.setTransform(affineTransform);
 
-    }
-
-    @Override
-    public void paint(Graphics2D graphics2D) {
-        switch (direccion){
-            case derecha:
-                dibujarDerecha(graphics2D);
-                break;
-            case izquierda:
-                dibujarIzquierda(graphics2D);
-                break;
-            case arriba:
-                dibujarArriba(graphics2D);
-                break;
-            case abajo:
-                dibujarAbajo(graphics2D);
-                break;
-        }              
     }
     public void voltear(){
         switch (op){
@@ -202,11 +163,28 @@ public class Eva extends ObjetoGrafico implements Runnable {
         }
     }
 
+    public void darPaso(){
+        switch(direccion){
+            case derecha:
+                x+= longitudPaso;
+                break;
+            case izquierda:
+                x-=longitudPaso;
+                break;
+            case arriba:
+                y-=longitudPaso;
+                break;
+            case abajo:
+                y+=longitudPaso;
+                break;
+        }
+    }
     @Override
     public void run() {
         for (;;){
-            darPaso();
-            if (x==120 && y==80 && direccion==TipoDireccion.abajo){
+            darPaso();   
+            System.err.println(direccion);
+            if (x==120 && y==80 && direccion==TipoDireccion.abajo){            
                 op=4;
                 voltear();
             }
@@ -230,6 +208,11 @@ public class Eva extends ObjetoGrafico implements Runnable {
                 Thread.sleep(1000);               
             } catch(InterruptedException ex) { }
         }
+    }
+
+    @Override
+    public void dibujarParado(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

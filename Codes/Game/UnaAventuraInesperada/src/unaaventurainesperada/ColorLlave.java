@@ -9,10 +9,10 @@ package unaaventurainesperada;
  *
  * @author INGENIERIA
  */
-public enum TipoDireccion {
-        parado,
-        izquierda,
-        derecha,
-        arriba,
-        abajo;    
+public enum ColorLlave {
+    Ninguna,
+    Amarilla,
+    Azul,
+    Verde,
+    Roja
 }

@@ -4,59 +4,29 @@
  */
 package unaaventurainesperada;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
  * @author julian
  */
-public class LlaveActual {
-    private final double totalWidth = 290d;
-    private final double totalHeight= 100d;
-
-    //Posicion, ancho y alto en el escenario
-    private double x,y;
-    private double width, height;
+public class LlaveActual extends ObjetoGrafico {
     
-    //Escalas
-    private double escalaX, escalaY;
+
+
 
     public LlaveActual(double x, double y, double width, double height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
-        this.escalaX = width / totalWidth;
-        this.escalaY = height / totalHeight;
+        super(x,y,width,height,290,100);
     } 
     
 
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getEscalaX() {
-        return escalaX;
-    }
-
-    public double getEscalaY() {
-        return escalaY;
-    }
     
+    @Override
     public void paint(Graphics2D graphics2D){
         //Transladar y escalar
         AffineTransform affineTransform = graphics2D.getTransform();

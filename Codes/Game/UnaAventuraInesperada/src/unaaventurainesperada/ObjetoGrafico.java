@@ -6,6 +6,7 @@
 package unaaventurainesperada;
 
 import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -16,6 +17,8 @@ public abstract class ObjetoGrafico {
     private final double width, height;
     private final double totalWidth, totalHeight;
     private final double escalaX, escalaY;
+    private boolean colisionable = true;
+    private boolean visible= true;
 
     public ObjetoGrafico(double x, double y, double width, double height, double totalWidth, double totalHeight) {
         this.x = x;
@@ -27,7 +30,30 @@ public abstract class ObjetoGrafico {
         this.escalaX = width / totalWidth;
         this.escalaY= height / totalHeight;
     }
+    public boolean colisionaCon(ObjetoGrafico otro){
+        if (otro == null || this == otro || ! this.isColisionable() || ! otro.isColisionable()){
+            return false;
+        }
+        Rectangle2D rectanguloThis=new Rectangle2D.Double(this.x,this.y,this.width,this.height);
+        Rectangle2D rectanguloOtro = new Rectangle2D.Double(otro.x,otro.y,otro.width,otro.height);
+        return rectanguloThis.intersects(rectanguloOtro);
+    }
 
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+    
+    public boolean isColisionable() {
+        return colisionable;
+    }
+
+    public void setColisionable(boolean colisionable) {
+        this.colisionable = colisionable;
+    }
     public double getX() {
         return x;
     }
