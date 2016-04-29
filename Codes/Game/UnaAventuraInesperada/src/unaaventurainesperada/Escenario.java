@@ -35,6 +35,7 @@ public class Escenario extends Canvas {
     private final LlaveAzul b_contador;
     private final LlaveAmarilla a_contador;
     private final TiempoRestante tiempoRestante;
+    private final ValorPuntaje valorPuntaje;
     private final Eva eva;
     
 
@@ -66,9 +67,7 @@ public class Escenario extends Canvas {
         v_contador = new LlaveVerde(260,180,20,20);
         b_contador = new LlaveAzul(260,180,20,20);
         a_contador= new LlaveAmarilla(260,180,20,20);
-        ricardo= new Ricardo(0,0,20,20, this, v_contador, b_contador,r_contador
-        ,a_contador) ;
-
+        
         objetosGraficos.add(r_contador);
         
         objetosGraficos.add(b_contador);
@@ -80,8 +79,8 @@ public class Escenario extends Canvas {
         v_contador.setVisible(false);
         b_contador.setVisible(false);
         
-        marco.addKeyListener(ricardo);
-        objetosGraficos.add(ricardo);
+        
+        
         objetosGraficos.add( new LlaveAzul(40,120,20,20) );
         objetosGraficos.add(new EdificioGris(240,120,20,20));        
         objetosGraficos.add(new EdificioGris(260,120,20,20));
@@ -92,13 +91,19 @@ public class Escenario extends Canvas {
         objetosGraficos.add( new EdificioVerde(80,0,20,20));
         objetosGraficos.add( new EdificioRojo(140,20,20,20));
         tiempoRestante= new TiempoRestante(240,160,20,20,this);
+        valorPuntaje= new ValorPuntaje(260,140,20,20,this);
         Timer timer= new Timer();
         timer.scheduleAtFixedRate(tiempoRestante, 10, 1000);
+        timer.scheduleAtFixedRate(valorPuntaje, 10, 1000);
         objetosGraficos.add( new Puntaje(240, 140, 20, 20));
         objetosGraficos.add( new Foras(20,0,20,20));
         objetosGraficos.add( new CasaRicardo(260,0,20,20));
+        ricardo= new Ricardo(0,0,20,20, this, v_contador, b_contador,r_contador
+        ,a_contador,valorPuntaje) ;
+        marco.addKeyListener(ricardo);
+        objetosGraficos.add(ricardo);
         //objetosGraficos.add( new Eva(120,0,20,20,this));
-        eva=new Eva(120,0,20,20,this);
+        eva=new Eva(120,0,20,20,this,valorPuntaje);
         Thread threadEva=new Thread(eva);
         objetosGraficos.add(eva);
         threadEva.start();
@@ -227,6 +232,7 @@ public class Escenario extends Canvas {
         //edificioVerde.paint(graphics2D);
         //edificioRojo.paint(graphics2D);
         tiempoRestante.paint(graphics2D);
+        valorPuntaje.paint(graphics2D);
 
         
         

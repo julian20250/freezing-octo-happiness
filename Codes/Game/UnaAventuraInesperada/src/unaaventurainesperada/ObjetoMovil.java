@@ -44,6 +44,14 @@ public abstract class ObjetoMovil extends ObjetoGrafico {
                 break;
         }
     }
+    public void alInicio(){
+        x=0;
+        y=0;
+    }
+    public void alInicio2(ObjetoGrafico objetoGrafico){
+        x=0;
+        y=0;
+    }
     public ObjetoMovil(double x, double y, double width, double height, double totalWidth, double totalHeight,
             TipoDireccion direccion, double longitudPaso) {
         super(x, y, width, height, totalWidth, totalHeight);

@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 /**
  *
@@ -25,12 +26,15 @@ public class Eva extends ObjetoMovil implements Runnable {
     
     private int op=1;
     private final Escenario escenario;
+    private final ValorPuntaje valorPuntaje;
     private TipoDireccion direccion= TipoDireccion.abajo;
 
     
-    public Eva(double x, double y, double width, double height, Escenario escenario) {
+    public Eva(double x, double y, double width, double height, Escenario escenario, 
+            ValorPuntaje valorPuntaje) {
         super(x,y,width,height,135,280, TipoDireccion.abajo,20);
         this.escenario=escenario;
+        this.valorPuntaje=valorPuntaje;
     } 
     
     private void dibujar(Graphics2D graphics2D){
@@ -184,6 +188,14 @@ public class Eva extends ObjetoMovil implements Runnable {
         for (;;){
             darPaso();   
             System.err.println(direccion);
+            ArrayList<ObjetoGrafico> quienes= escenario.conQuienesColisiona(this);
+            for (ObjetoGrafico o: quienes){
+                if (o instanceof Ricardo){
+                    Ricardo ricardo = (Ricardo) o;
+                    ricardo.alInicio();
+                    valorPuntaje.villano();
+                }
+            }
             if (x==120 && y==80 && direccion==TipoDireccion.abajo){            
                 op=4;
                 voltear();

@@ -27,6 +27,7 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
     private final LlaveVerde v_contador;
     private final LlaveAzul b_contador;
     private final LlaveRoja r_contador;
+    private final ValorPuntaje valorPuntaje;
     private final LlaveAmarilla a_contador;
     
     private boolean tok1=false;
@@ -46,13 +47,15 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
    
     
     public Ricardo(double x, double y, double width, double height, Escenario escenario, LlaveVerde v_contador,
-            LlaveAzul b_contador, LlaveRoja r_contador, LlaveAmarilla a_contador) {
+            LlaveAzul b_contador, LlaveRoja r_contador, LlaveAmarilla a_contador,
+            ValorPuntaje valorPuntaje) {
         super(x,y,width,height,110d,290d, TipoDireccion.parado, 20);
         this.escenario = escenario;
         this.v_contador=v_contador;
         this.a_contador=a_contador;
         this.b_contador=b_contador;
         this.r_contador=r_contador;
+        this.valorPuntaje=valorPuntaje;
     } 
     
 
@@ -171,6 +174,7 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
         LlaveAzul llaveAzul = null;
         LlaveRoja llaveRoja = null;
         LlaveVerde llaveVerde=null;
+        Eva eva=null;
         
         switch(tecla){
             case KeyEvent.VK_RIGHT:
@@ -220,6 +224,9 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
                 if (!tok4){
                     devolver(o);
                 }
+            }else if (o instanceof Eva){
+                alInicio2(o);
+                valorPuntaje.villano();
             }              
         }
         if (llaveAmarilla !=null){
