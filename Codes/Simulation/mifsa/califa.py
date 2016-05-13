@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import astropy.io.fits as pyfits
 import matplotlib.cm as cm
+import warnings
 import matplotlib.colorbar as cbar
 print "Importing Libraries... Done."
 
@@ -88,6 +89,8 @@ def end(root):
     sys.exit()
 
 supported_parameters=["-no_interval"]
+warnings.simplefilter(action = "ignore", category= FutureWarning)
+warnings.simplefilter(action = "ignore", category= UserWarning)
 while True:
     print "\nChecking Parameters..."
     if len(sys.argv)>1:
@@ -102,7 +105,7 @@ while True:
     print "Checking Parameters... Done."
 
     #Steps of spectra
-    step=4
+    step=2
 
     #Opening File and Pointing
     print "\nOpening FITS file..."
