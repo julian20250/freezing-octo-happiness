@@ -28,15 +28,18 @@ public class Escenario extends Canvas {
     private final double totalHeight=220.0d;
     private int width, height;
     private double escalaX, escalaY;
-    private final ArrayList<ObjetoGrafico> objetosGraficos;
+    public final ArrayList<ObjetoGrafico> objetosGraficos;
     private final Ricardo ricardo;
     private final LlaveRoja r_contador;
     private final LlaveVerde v_contador;
     private final LlaveAzul b_contador;
+    private final Foras foras;
     private final LlaveAmarilla a_contador;
     private final TiempoRestante tiempoRestante;
     private final ValorPuntaje valorPuntaje;
     private final Eva eva;
+    private final Lost lost;
+    private final Won won;
     
 
 
@@ -67,6 +70,10 @@ public class Escenario extends Canvas {
         v_contador = new LlaveVerde(260,180,20,20);
         b_contador = new LlaveAzul(260,180,20,20);
         a_contador= new LlaveAmarilla(260,180,20,20);
+        lost = new Lost(0,0,260,180);
+        objetosGraficos.add(lost);
+        lost.setVisible(false);
+       
         
         objetosGraficos.add(r_contador);
         
@@ -90,23 +97,30 @@ public class Escenario extends Canvas {
         objetosGraficos.add( new EdificioAzul(180,100,20,20));
         objetosGraficos.add( new EdificioVerde(80,0,20,20));
         objetosGraficos.add( new EdificioRojo(140,20,20,20));
-        tiempoRestante= new TiempoRestante(240,160,20,20,this);
-        valorPuntaje= new ValorPuntaje(260,140,20,20,this);
+        tiempoRestante= new TiempoRestante(240,160,20,20,this,lost);
+        valorPuntaje= new ValorPuntaje(260,140,20,20,this, lost);
         Timer timer= new Timer();
         timer.scheduleAtFixedRate(tiempoRestante, 10, 1000);
         timer.scheduleAtFixedRate(valorPuntaje, 10, 1000);
         objetosGraficos.add( new Puntaje(240, 140, 20, 20));
-        objetosGraficos.add( new Foras(20,0,20,20));
+        foras = new Foras(20,0,20,20,this);
+        Thread threadForas=new Thread(foras);
+        objetosGraficos.add(foras);
+        threadForas.start();
         objetosGraficos.add( new CasaRicardo(260,0,20,20));
-        ricardo= new Ricardo(0,0,20,20, this, v_contador, b_contador,r_contador
-        ,a_contador,valorPuntaje) ;
-        marco.addKeyListener(ricardo);
-        objetosGraficos.add(ricardo);
+
         //objetosGraficos.add( new Eva(120,0,20,20,this));
         eva=new Eva(120,0,20,20,this,valorPuntaje);
         Thread threadEva=new Thread(eva);
         objetosGraficos.add(eva);
         threadEva.start();
+        won = new Won(0,0,260,180,tiempoRestante);
+        objetosGraficos.add(won);
+        won.setVisible(false); 
+        ricardo= new Ricardo(0,0,20,20, this, v_contador, b_contador,r_contador
+        ,a_contador,valorPuntaje, foras,eva,lost,tiempoRestante,won) ;
+        marco.addKeyListener(ricardo);
+        objetosGraficos.add(ricardo);
         //int edificioGrisLength=60;
         //edificios = new EdificioGris[60];
         for (int i=0; i<10; i++){

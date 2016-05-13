@@ -166,7 +166,7 @@ public class Eva extends ObjetoMovil implements Runnable {
                 break;
         }
     }
-
+    
     public void darPaso(){
         switch(direccion){
             case derecha:
@@ -187,7 +187,7 @@ public class Eva extends ObjetoMovil implements Runnable {
     public void run() {
         for (;;){
             darPaso();   
-            System.err.println(direccion);
+            //System.err.println(direccion);
             ArrayList<ObjetoGrafico> quienes= escenario.conQuienesColisiona(this);
             for (ObjetoGrafico o: quienes){
                 if (o instanceof Ricardo){
@@ -195,6 +195,10 @@ public class Eva extends ObjetoMovil implements Runnable {
                     ricardo.alInicio();
                     valorPuntaje.villano();
                 }
+                if (o instanceof Foras){
+                    valorPuntaje.asesino();
+                }
+                    
             }
             if (x==120 && y==80 && direccion==TipoDireccion.abajo){            
                 op=4;

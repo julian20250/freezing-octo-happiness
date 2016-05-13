@@ -6,19 +6,26 @@
 
 package unaaventurainesperada;
 
+
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.List;
 
 /**
  *
  * @author usuario
  */
-public class Foras extends ObjetoGrafico {
-    public Foras(double x, double y, double width, double height) {
-        super(x,y,width,height,145,280);
+public class Foras extends ObjetoMovil implements Runnable {
+    private final Escenario escenario;
+    public Foras(double x, double y, double width, double height, Escenario escenario) {
+        super(x,y,width,height,145,280,TipoDireccion.abajo,20);
+        this.escenario = escenario;
+        
     } 
     
     @Override
@@ -97,5 +104,90 @@ public class Foras extends ObjetoGrafico {
          //Volver a la traslacion y escalacion anterior
         graphics2D.setTransform(affineTransform);
     }
+
+    
+    
+    
+
+    synchronized public void random(){
+        List<Integer> myCoordsx = new ArrayList<Integer>();
+        List<Integer> myCoordsy = new ArrayList<Integer>();
+        for (int i=0; i<260; i+=20){
+            myCoordsx.add(i);
+        }
+        for (int i=0; i<180; i+=20){
+            myCoordsy.add(i);
+        }
+        Random  rnd = new Random();
+        int randomNumx = rnd.nextInt((myCoordsx.size()-1) );
+        int randomNumy = rnd.nextInt((myCoordsy.size()-1) );
+        x=myCoordsx.get(randomNumx);
+        y=myCoordsy.get(randomNumy);
+        while ((x==240 & y==140) || (x==260 & y==140) || (x==240 & y==160) || (x==260 & y==160)
+                || (x==240 & y==180) || (x==260 & y==180)){
+            randomNumx = rnd.nextInt((myCoordsx.size()) );
+            randomNumy = rnd.nextInt((myCoordsy.size()) );
+            x=myCoordsx.get(randomNumx);
+            y=myCoordsy.get(randomNumy);
+            
+        }
+
+
+        System.out.println(x);
+        System.out.println(y);
+              
+    }
+    @Override
+    public void run(){
+        for (;;){
+            random();
+            ArrayList<ObjetoGrafico> quienes= escenario.conQuienesColisiona(this);
+            int tok;
+             for (ObjetoGrafico o: quienes){
+                 
+                 tok=1;
+                 if (o instanceof EdificioGris || o instanceof EdificioRojo ||
+                         o instanceof EdificioVerde || o instanceof EdificioAmarillo ||
+                         o instanceof EdificioAzul
+                         ){                   
+                    tok=0;
+             }
+             if (tok==1){
+                   try{
+                        Thread.sleep(5000);               
+                    } catch(InterruptedException ex) { }  
+                 }
+             }
+                 
+            
+            }
+        }
+    
+
+    @Override
+    public void dibujarDerecha(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarIzquierda(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarArriba(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarAbajo(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void dibujarParado(Graphics2D graphics2D) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
         
 }

@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 public abstract class ObjetoMovil extends ObjetoGrafico {
     public TipoDireccion direccion;
     public final double longitudPaso;
+
     private int op=1;
 
     public TipoDireccion getDireccion() {
@@ -52,12 +53,15 @@ public abstract class ObjetoMovil extends ObjetoGrafico {
         x=0;
         y=0;
     }
+
     public ObjetoMovil(double x, double y, double width, double height, double totalWidth, double totalHeight,
             TipoDireccion direccion, double longitudPaso) {
         super(x, y, width, height, totalWidth, totalHeight);
         this.direccion=direccion;
         this.longitudPaso=longitudPaso;
+
     }
+
     
     public abstract void dibujarDerecha(Graphics2D graphics2D);
     public abstract void dibujarIzquierda(Graphics2D graphics2D);

@@ -28,7 +28,12 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
     private final LlaveAzul b_contador;
     private final LlaveRoja r_contador;
     private final ValorPuntaje valorPuntaje;
+    private final Foras foras;
+    private final Eva eva;
+    private final Lost lost;
     private final LlaveAmarilla a_contador;
+    private final Won won;
+    private final TiempoRestante tiempoRestante;
     
     private boolean tok1=false;
     private boolean tok2=false;
@@ -48,7 +53,8 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
     
     public Ricardo(double x, double y, double width, double height, Escenario escenario, LlaveVerde v_contador,
             LlaveAzul b_contador, LlaveRoja r_contador, LlaveAmarilla a_contador,
-            ValorPuntaje valorPuntaje) {
+            ValorPuntaje valorPuntaje, Foras foras, Eva eva, Lost lost, TiempoRestante tiempoRestante,
+            Won won) {
         super(x,y,width,height,110d,290d, TipoDireccion.parado, 20);
         this.escenario = escenario;
         this.v_contador=v_contador;
@@ -56,6 +62,11 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
         this.b_contador=b_contador;
         this.r_contador=r_contador;
         this.valorPuntaje=valorPuntaje;
+        this.foras = foras;
+        this.eva=eva;
+        this.lost=lost;
+        this.tiempoRestante=tiempoRestante;
+        this.won =won;
     } 
     
 
@@ -174,8 +185,7 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
         LlaveAzul llaveAzul = null;
         LlaveRoja llaveRoja = null;
         LlaveVerde llaveVerde=null;
-        Eva eva=null;
-        
+        ArrayList<ObjetoGrafico> todos =escenario.objetosGraficos;
         switch(tecla){
             case KeyEvent.VK_RIGHT:
                 setDireccion(TipoDireccion.derecha);
@@ -188,6 +198,18 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
                 break;
             case KeyEvent.VK_DOWN:
                 setDireccion(TipoDireccion.abajo);
+                break;
+            case KeyEvent.VK_R:
+                for (ObjetoGrafico objetoGrafico : todos){
+                objetoGrafico.setVisible(true);
+                }
+                lost.setVisible(false);
+                alInicio();
+                eva.setX(120d);
+                eva.setY(0d);
+                valorPuntaje.score=20000;
+                tiempoRestante.minutos=1;
+                tiempoRestante.segundos=30;
                 break;
             default:
                 setDireccion(TipoDireccion.parado);
@@ -227,6 +249,16 @@ public class Ricardo extends ObjetoMovil implements KeyListener{
             }else if (o instanceof Eva){
                 alInicio2(o);
                 valorPuntaje.villano();
+            }else if (o instanceof Foras){
+                foras.random();
+                valorPuntaje.ayuda();
+            }else if (o instanceof CasaRicardo){
+                
+
+                for (ObjetoGrafico objetoGrafico : todos){
+                    objetoGrafico.setVisible(false);
+                }
+                won.setVisible(true);
             }              
         }
         if (llaveAmarilla !=null){

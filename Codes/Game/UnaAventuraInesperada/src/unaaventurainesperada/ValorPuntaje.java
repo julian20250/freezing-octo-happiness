@@ -8,6 +8,7 @@ package unaaventurainesperada;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
@@ -15,7 +16,7 @@ import java.util.TimerTask;
  * @author INGENIERIA
  */
 public class ValorPuntaje extends TimerTask {
-
+    private final Lost lost;
     private final double totalWidth = 290d;
     private final double totalHeight= 100d;
 
@@ -26,9 +27,10 @@ public class ValorPuntaje extends TimerTask {
     //Escalas
     private double escalaX, escalaY;
     
-    private short score=20000;
+    public long score=20000;
     private final Escenario escenario;
-    public ValorPuntaje(double x, double y, double width, double height, Escenario escenario) {
+    public ValorPuntaje(double x, double y, double width, double height, Escenario escenario,
+            Lost lost) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -36,17 +38,27 @@ public class ValorPuntaje extends TimerTask {
         this.escalaX = width / totalWidth;
         this.escalaY = height / totalHeight;
         this.escenario = escenario;
+        this.lost = lost;
     } 
     
     public void decrementar() {
-        if (score>0){
+
             score-=10;
-        }else score=0;
     }
     public void villano(){
        if (score>0){
             score-=10000;
         }else score=0;
+    }
+    public void ayuda(){
+
+         score+=5000;
+
+    }
+    public void asesino(){
+
+         score-=15000;
+
     }
     
     @Override
@@ -99,6 +111,16 @@ public class ValorPuntaje extends TimerTask {
     @Override
     public void run() {
         decrementar();
+        
+        
+        
+        if (score<0){
+            ArrayList<ObjetoGrafico> quienes= escenario.objetosGraficos;
+            for (ObjetoGrafico objetoGrafico : quienes){
+                objetoGrafico.setVisible(false);
+            }
+            lost.setVisible(true);
+        }
         escenario.repaint();
     }
     

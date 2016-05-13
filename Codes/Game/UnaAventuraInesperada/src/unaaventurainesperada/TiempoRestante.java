@@ -7,6 +7,7 @@ package unaaventurainesperada;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 /**
@@ -16,7 +17,7 @@ import java.util.TimerTask;
 public class TiempoRestante extends TimerTask{
     private final double totalWidth = 290d;
     private final double totalHeight= 100d;
-
+    private final Lost lost;
     //Posicion, ancho y alto en el escenario
     private double x,y;
     private double width, height;
@@ -24,11 +25,12 @@ public class TiempoRestante extends TimerTask{
     //Escalas
     private double escalaX, escalaY;
     
-    private short minutos=4;
-    private short segundos=59;
+    public short minutos=1;
+    public short segundos=30;
     private short paso=1;
     private final Escenario escenario;
-    public TiempoRestante(double x, double y, double width, double height, Escenario escenario) {
+    public TiempoRestante(double x, double y, double width, double height, Escenario escenario,
+            Lost lost) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -36,10 +38,11 @@ public class TiempoRestante extends TimerTask{
         this.escalaX = width / totalWidth;
         this.escalaY = height / totalHeight;
         this.escenario = escenario;
+        this.lost=lost;
     } 
     
     public void decrementar() {
-        if (minutos > 0){
+        if (minutos >= 0){
             segundos-=paso;
             if(segundos < 0){
                 minutos--;
@@ -49,6 +52,14 @@ public class TiempoRestante extends TimerTask{
         else{
             minutos=0;
             segundos=0;
+
+        }
+        if (minutos==0 & segundos==0){
+            ArrayList<ObjetoGrafico> quienes= escenario.objetosGraficos;
+            for (ObjetoGrafico objetoGrafico : quienes){
+                objetoGrafico.setVisible(false);
+            }
+            lost.setVisible(true);         
         }
     }
     
