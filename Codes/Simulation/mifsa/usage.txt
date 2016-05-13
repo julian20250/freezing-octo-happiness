@@ -1,0 +1,8 @@
+
+USAGE:
+
+python mifsa.py -...
+
+OPTIONS:
+-no_interval: The program does not show the window of selecting the interval.
+
