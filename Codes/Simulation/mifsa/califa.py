@@ -34,14 +34,15 @@ def choose():
     root.destroy()
     return m
 
-def emergent_window():
+def emergent_window(k):
     root=Tk()
     root.geometry("500x500")
     root.wm_title("Wavelength Interval")
     Label(root,text="Insert the interval").grid(row=0, column=0)
     var = IntVar()
-    c= Checkbutton(root, text="Allow Interval", variable=var, onvalue=1, offvalue=0)
-    c.grid(row=1, column=0)
+    if k==0:
+      c= Checkbutton(root, text="Allow Interval", variable=var, onvalue=1, offvalue=0)
+      c.grid(row=1, column=0)
     Label(root,text="Interval").grid(row=2,column=0)
     begin= Entry(root)
     end= Entry(root)
@@ -50,7 +51,7 @@ def emergent_window():
     j=[]
     Button(root, text="Continue", command=lambda: obtain_entry(root,begin,end,j)).grid(row=3,column=2)
     root.mainloop()
-    if var.get()==1:
+    if var.get()==1 or k==1:
         return j
     else:
         return None
@@ -81,13 +82,32 @@ def showspectra(event):
             ax2.plot(wav1,dat1)
         print "Drew spectra of pixel (%i, %i)"%(x,y)
         f.canvas.draw()
+        preserve_x,preserve_y=x,y
     except:
-        pass
+      x,y=event.xdata, event.ydata
+      if (x!=None and y!=None):
+	ax2.clear()
+	f.canvas.draw()
+        ran=emergent_window(1)
+        ax2.set_xlim(ran[0],ran[1])
+        wally, biggy, endy =compare(wavelength,ran,1)
+        ax2.plot(wally, [data[cout][preserve_x][preserve_y] for cout in xrange(biggy,endy,1)])
+        f.canvas.draw()
+      else:
+	pass
 
 def end(root):
     root.destroy()
     sys.exit()
-
+    
+def compare(wavelength,ran,step):
+    compare_begin=[abs(x-ran[0]) for x in wavelength]
+    compare_end=[abs(x-ran[1]) for x in wavelength]
+    begin_wl=compare_begin.index(min(compare_begin))
+    end_wl=compare_end.index(min(compare_end))
+    wavelength=[wavelength[x] for x in xrange(begin_wl,end_wl,step)]
+    return wavelength,begin_wl,end_wl
+    
 supported_parameters=["-no_interval"]
 warnings.simplefilter(action = "ignore", category= FutureWarning)
 warnings.simplefilter(action = "ignore", category= UserWarning)
@@ -175,25 +195,18 @@ while True:
     #Emergent Window
     ran=None
     if len(sys.argv)==1:
-        ran=emergent_window()
+        ran=emergent_window(0)
     else:
         just_a_flag=0
         for x in sys.argv[1:]:
             if x=="-no_interval":
                 just_a_flag=1
         if just_a_flag==0:
-            ran=emergent_window()
+            ran=emergent_window(0)
     token=0
     if ran != None:
-        compare_begin=[abs(x-ran[0]) for x in wavelength]
-        compare_end=[abs(x-ran[1]) for x in wavelength]
-        begin_wl=compare_begin.index(min(compare_begin))
-        end_wl=compare_end.index(min(compare_end))
-        wavelength=[wavelength[x] for x in xrange(begin_wl,end_wl,step)]
-        ka=len(data[0])
+        wavelength,begin_wl,end_wl=compare(wavelength,ran,step)
         token=1
-        ke=len(data[0][0])
-        ob=data
         for x in xrange(len(data[0])):
             for y in xrange(len(data[0][0])):
                 for z in xrange(0,len(data),step):
