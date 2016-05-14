@@ -19,6 +19,7 @@ public class ValorPuntaje extends TimerTask {
     private final Lost lost;
     private final double totalWidth = 290d;
     private final double totalHeight= 100d;
+    public boolean continuar=true;
 
     //Posicion, ancho y alto en el escenario
     private double x,y;
@@ -110,10 +111,8 @@ public class ValorPuntaje extends TimerTask {
 
     @Override
     public void run() {
-        decrementar();
-        
-        
-        
+        if (continuar==true) decrementar();
+                        
         if (score<0){
             ArrayList<ObjetoGrafico> quienes= escenario.objetosGraficos;
             for (ObjetoGrafico objetoGrafico : quienes){

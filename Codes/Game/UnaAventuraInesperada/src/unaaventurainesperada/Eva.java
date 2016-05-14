@@ -27,7 +27,8 @@ public class Eva extends ObjetoMovil implements Runnable {
     private int op=1;
     private final Escenario escenario;
     private final ValorPuntaje valorPuntaje;
-    private TipoDireccion direccion= TipoDireccion.abajo;
+    public boolean hate = false;
+    public TipoDireccion direccion= TipoDireccion.abajo;
 
     
     public Eva(double x, double y, double width, double height, Escenario escenario, 
@@ -199,8 +200,13 @@ public class Eva extends ObjetoMovil implements Runnable {
                     valorPuntaje.asesino();
                 }
                     
+            }if (hate==true){
+                System.out.println("HOLA");
+                op=1;
+                voltear();
+                hate=false;
             }
-            if (x==120 && y==80 && direccion==TipoDireccion.abajo){            
+             else if (x==120 && y==80 && direccion==TipoDireccion.abajo){            
                 op=4;
                 voltear();
             }

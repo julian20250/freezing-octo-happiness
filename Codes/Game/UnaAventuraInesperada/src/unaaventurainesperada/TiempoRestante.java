@@ -21,6 +21,7 @@ public class TiempoRestante extends TimerTask{
     //Posicion, ancho y alto en el escenario
     private double x,y;
     private double width, height;
+    public boolean algo=true;
     
     //Escalas
     private double escalaX, escalaY;
@@ -42,7 +43,7 @@ public class TiempoRestante extends TimerTask{
     } 
     
     public void decrementar() {
-        if (minutos >= 0){
+        if (minutos >= 0 & algo==true){
             segundos-=paso;
             if(segundos < 0){
                 minutos--;
@@ -51,10 +52,9 @@ public class TiempoRestante extends TimerTask{
         }
         else{
             minutos=0;
-            segundos=0;
-
+            segundos=0;         
         }
-        if (minutos==0 & segundos==0){
+        if (minutos==0 & segundos==0 & algo==true){
             ArrayList<ObjetoGrafico> quienes= escenario.objetosGraficos;
             for (ObjetoGrafico objetoGrafico : quienes){
                 objetoGrafico.setVisible(false);
@@ -115,7 +115,7 @@ public class TiempoRestante extends TimerTask{
 
     @Override
     public void run() {
-        decrementar();
+        if (algo==true) decrementar();
         escenario.repaint();
     }
     

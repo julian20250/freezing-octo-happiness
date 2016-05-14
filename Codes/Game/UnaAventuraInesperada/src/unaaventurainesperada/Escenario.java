@@ -40,7 +40,10 @@ public class Escenario extends Canvas {
     private final Eva eva;
     private final Lost lost;
     private final Won won;
-    
+    private final LlaveAzul llaveAzul;
+    private final LlaveVerde llaveVerde;
+    private final LlaveRoja llaveRoja;
+    private final LlaveAmarilla llaveAmarilla;
 
 
 
@@ -64,7 +67,8 @@ public class Escenario extends Canvas {
         
         objetosGraficos= new ArrayList<>();
         objetosGraficos.add(new LlaveActual(240,180,20,20));
-        objetosGraficos.add( new LlaveRoja(260,60,20,20) );
+        llaveRoja=new LlaveRoja(260,60,20,20);
+        objetosGraficos.add( llaveRoja );
         //contadorLlave= new ContadorLlave(260,180,20,20);
         r_contador = new LlaveRoja(260,180,20,20);
         v_contador = new LlaveVerde(260,180,20,20);
@@ -87,12 +91,14 @@ public class Escenario extends Canvas {
         b_contador.setVisible(false);
         
         
-        
-        objetosGraficos.add( new LlaveAzul(40,120,20,20) );
+        llaveAzul=new LlaveAzul(40,120,20,20);
+        objetosGraficos.add( llaveAzul );
         objetosGraficos.add(new EdificioGris(240,120,20,20));        
         objetosGraficos.add(new EdificioGris(260,120,20,20));
-        objetosGraficos.add( new LlaveVerde(0,40,20,20));
-        objetosGraficos.add( new LlaveAmarilla(160,180,20,20));
+        llaveVerde=new LlaveVerde(0,40,20,20);
+        objetosGraficos.add(llaveVerde );
+        llaveAmarilla=new LlaveAmarilla(160,180,20,20);
+        objetosGraficos.add( llaveAmarilla);
         objetosGraficos.add( new EdificioAmarillo(220,100,20,20));
         objetosGraficos.add( new EdificioAzul(180,100,20,20));
         objetosGraficos.add( new EdificioVerde(80,0,20,20));
@@ -114,11 +120,12 @@ public class Escenario extends Canvas {
         Thread threadEva=new Thread(eva);
         objetosGraficos.add(eva);
         threadEva.start();
-        won = new Won(0,0,260,180,tiempoRestante);
+        won = new Won(0,0,260,180,tiempoRestante, valorPuntaje);
         objetosGraficos.add(won);
         won.setVisible(false); 
         ricardo= new Ricardo(0,0,20,20, this, v_contador, b_contador,r_contador
-        ,a_contador,valorPuntaje, foras,eva,lost,tiempoRestante,won) ;
+        ,a_contador,valorPuntaje, foras,eva,lost,tiempoRestante,won,llaveAmarilla,
+                llaveAzul, llaveVerde, llaveRoja) ;
         marco.addKeyListener(ricardo);
         objetosGraficos.add(ricardo);
         //int edificioGrisLength=60;

@@ -15,9 +15,12 @@ import java.awt.geom.AffineTransform;
  */
 public class Won extends ObjetoGrafico {
     private final TiempoRestante tiempoRestante;
-    public Won(double x, double y, double width, double height, TiempoRestante tiempoRestante) {
+    private final ValorPuntaje valorPuntaje;
+    public Won(double x, double y, double width, double height, TiempoRestante tiempoRestante,
+            ValorPuntaje valorPuntaje) {
         super(x,y,width,height,290,120);
         this.tiempoRestante=tiempoRestante;
+        this.valorPuntaje=valorPuntaje;
     } 
     
 
@@ -31,7 +34,7 @@ public class Won extends ObjetoGrafico {
         //Contorno Anillo
         graphics2D.setFont(new Font("sans", Font.BOLD, 30 ));
         graphics2D.drawString("You won", 0,60);   
-        graphics2D.drawString("score: ", 0,80);
+        graphics2D.drawString("score: "+valorPuntaje.toString(), 0,80);
         graphics2D.drawString("tiempo: "+tiempoRestante.toString(), 0,100);
         //Volver a la traslacion y escalacion anterior
         graphics2D.setTransform(affineTransform);
