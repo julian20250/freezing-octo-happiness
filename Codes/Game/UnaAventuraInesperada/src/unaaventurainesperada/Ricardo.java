@@ -299,14 +299,18 @@ public class Ricardo extends ObjetoMovil implements KeyListener {
             llaveAzul.setColisionable(false);
             llaveAzul.setVisible(false);
             v_contador.setVisible(false);
+            if (tok4==false){
             b_contador.setVisible(true);
+            }
             tok2 = true;
 
         }
         if (tok1==true) {
             llaveVerde.setColisionable(false);
             llaveVerde.setVisible(false);
+            if (tok2==false){
             v_contador.setVisible(true);
+            }
             tok1 = true;
 
 
