@@ -62,6 +62,14 @@ public class Inmueble {
     public double getTax() {
         return tax;
     }
+
+    public int getEstrato() {
+        return estrato;
+    }
+
+    public int getTipo() {
+        return tipo;
+    }
     
     
     

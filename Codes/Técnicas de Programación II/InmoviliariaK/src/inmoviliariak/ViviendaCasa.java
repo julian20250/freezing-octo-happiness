@@ -23,6 +23,10 @@ public class ViviendaCasa extends Inmueble{
         if (!vigilanciaPrivada)
             this.setValue(this.getValue()-.1*this.getOriginalValue());
     }
+
+    public int getNumeroParqueaderos() {
+        return numeroParqueaderos;
+    }
     
     
 }
