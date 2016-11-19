@@ -23,7 +23,7 @@ public class Window extends JFrame implements ActionListener{
     MenuInmoviliariaK menu;
     public Window(MenuInmoviliariaK menu){
         this.menu=menu;
-        setSize(600,600);
+        setSize(900,600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Inmobiliaria K");
         setLayout(new BorderLayout());
@@ -33,7 +33,7 @@ public class Window extends JFrame implements ActionListener{
         add(detalleInmueble, BorderLayout.WEST);
         DisponiblesYVendidos disponiblesYVendidos= new DisponiblesYVendidos(menu);
         add(disponiblesYVendidos, BorderLayout.EAST);
-        BotonesBottom botonesBottom= new BotonesBottom(menu);
+        BotonesBottom botonesBottom= new BotonesBottom(menu, disponiblesYVendidos);
         add(botonesBottom, BorderLayout.SOUTH); 
     }   
     

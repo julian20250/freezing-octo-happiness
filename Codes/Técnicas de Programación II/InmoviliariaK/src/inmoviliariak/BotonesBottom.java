@@ -19,9 +19,11 @@ import javax.swing.JPanel;
  */
 public class BotonesBottom extends JPanel implements ActionListener{
     MenuInmoviliariaK menu;
-    public BotonesBottom(MenuInmoviliariaK menu){
+    DisponiblesYVendidos actualizame;
+    public BotonesBottom(MenuInmoviliariaK menu, DisponiblesYVendidos actualizame){
         this.menu=menu;
-        setLayout(new GridLayout(1, 3));
+        this.actualizame=actualizame;
+        setLayout(new GridLayout(1, 4));
         JButton btn1= new JButton("Dar Recaudo Neto");
         btn1.setActionCommand("Net");
         btn1.addActionListener(this);
@@ -31,7 +33,10 @@ public class BotonesBottom extends JPanel implements ActionListener{
         JButton btn3= new JButton("Dar Total Recaudo");
         btn3.setActionCommand("Recaudo");
         btn3.addActionListener(this);
-        add(btn1); add(btn2); add(btn3);
+        JButton btn4= new JButton("Vender of. más caras");
+        btn4.setActionCommand("vender");
+        btn4.addActionListener(this);
+        add(btn1); add(btn2); add(btn3); add(btn4);
     }
 
     @Override
@@ -46,6 +51,48 @@ public class BotonesBottom extends JPanel implements ActionListener{
             }
         }else if (e.getActionCommand().equals("Recaudo")){
             JOptionPane.showMessageDialog(new JFrame(),  menu.darRecaudosDespuesDeImpuestos());
+        }else if (e.getActionCommand().equals("vender")){
+            try{
+                sellMostExpensive();
+            }catch(NotEnoughOfficesException ex){
+                JOptionPane.showMessageDialog(new JFrame(), ex.getMessage());
+            }
+        }
+    }
+
+    private void sellMostExpensive() throws NotEnoughOfficesException {
+        // How many offices are
+        int numberOffices=0;
+        for(Inmueble inmueble: menu.l)
+            if(inmueble.getTipo()==1)
+                numberOffices++;
+        if(numberOffices<2)
+            throw new NotEnoughOfficesException("Necesita al menos dos oficinas, tiene"
+                    + " "+numberOffices+".");
+        for(int ii=0; ii<2; ii++){
+            int position=getMaxOfficePos();
+            menu.venderInmueble(menu.l.get(position).getId());
+        }
+        actualizame.eraseMyself();
+        actualizame.writeMyself();
+    }
+
+    private int getMaxOfficePos() {
+        int count=0;
+        int pos=0;
+        double bestPrice=-1;
+        for(Inmueble inmueble: menu.l){
+            if(inmueble.getId()==1 && inmueble.getOriginalValue()>bestPrice)
+                pos=count;
+            count++;
+        }
+        return pos;
+    }
+
+    private static class NotEnoughOfficesException extends Exception {
+
+        public NotEnoughOfficesException(String string) {
+            super(string);
         }
     }
 }
